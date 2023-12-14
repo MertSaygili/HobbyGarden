@@ -1,4 +1,4 @@
-package hobby_garden.hobby_garden_server.common.model;
+package hobby_garden.hobby_garden_server.log.model;
 
 import hobby_garden.hobby_garden_server.common.enums.HttpStatusCodes;
 import hobby_garden.hobby_garden_server.common.enums.LogLevel;
@@ -8,13 +8,13 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class LogResponse<T> {
+public class LogResponseModel<T> {
     // log level
     private LogLevel logLevel;
     // http status codes
-    private HttpStatusCodes httpStatusCode;
+    private int httpStatusCode;
     // response time, how long it took to process the request
-    private long responseTime;
+    private String responseTime;
     // response size, how big the response is
     private long responseSize;
     // response data
