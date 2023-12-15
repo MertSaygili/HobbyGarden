@@ -24,6 +24,7 @@ import java.sql.Timestamp;
 
 //TODO add headers to log
 //TODO add path variables to log (if any)
+//TODO crypto password if user password is in log
 
 @Component
 @NonNullApi

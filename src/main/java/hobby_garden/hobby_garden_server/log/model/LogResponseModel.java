@@ -1,6 +1,5 @@
 package hobby_garden.hobby_garden_server.log.model;
 
-import hobby_garden.hobby_garden_server.common.enums.HttpStatusCodes;
 import hobby_garden.hobby_garden_server.common.enums.LogLevel;
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;

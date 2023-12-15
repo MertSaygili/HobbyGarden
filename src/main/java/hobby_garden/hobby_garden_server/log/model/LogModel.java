@@ -4,10 +4,8 @@ import hobby_garden.hobby_garden_server.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
-import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoId;
-import org.springframework.data.neo4j.core.schema.Id;
 
 @Data
 @AllArgsConstructor
