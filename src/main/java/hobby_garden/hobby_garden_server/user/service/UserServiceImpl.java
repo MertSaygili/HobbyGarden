@@ -10,14 +10,13 @@ import hobby_garden.hobby_garden_server.user.dto.response.UserResponse;
 import hobby_garden.hobby_garden_server.user.entity.User;
 import hobby_garden.hobby_garden_server.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class UserServiceImpl  implements UserService {
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordMapper passwordMapper;
 
@@ -29,13 +28,12 @@ public class UserServiceImpl  implements UserService {
 
     @Override
     public BaseResponse<UserResponse> createUser(CreateUser createUser) {
-        //* check if user with this username already exists
-        if(userRepository.findByUsername(createUser.getUsername()).isPresent()){
+        // * check if user with this username already exists
+        if (userRepository.findByUsername(createUser.getUsername()).isPresent()) {
             throw new UserAlreadyExist(Strings.usernameInUse);
         }
 
-
-        //* create new user entity model
+        // * create new user entity model
         User user = new User(
                 null,
                 createUser.getUsername(),
@@ -43,10 +41,9 @@ public class UserServiceImpl  implements UserService {
                 passwordMapper.encode(createUser.getPassword()),
                 createUser.getEmail(),
                 createUser.getHobbies(),
-                createUser.getCreatedAt()
-        );
+                createUser.getCreatedAt());
 
-        try{
+        try {
             // save user to db
             User newUser = userRepository.save(user);
 
@@ -57,8 +54,7 @@ public class UserServiceImpl  implements UserService {
                     newUser.getUsername(),
                     newUser.getUsername(),
                     newUser.getHobbies(),
-                    newUser.getCreatedAt().toString()
-            );
+                    newUser.getCreatedAt().toString());
 
             return new BaseResponse<>(true, Strings.userCreated, response);
         } catch (Exception e) {
