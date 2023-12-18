@@ -6,13 +6,21 @@ import hobby_garden.hobby_garden_server.log.model.LogModel;
 import hobby_garden.hobby_garden_server.log.model.LogRequestModel;
 import hobby_garden.hobby_garden_server.log.model.LogResponseModel;
 import hobby_garden.hobby_garden_server.log.repository.LogRepository;
+import hobby_garden.hobby_garden_server.user.service.JWTService;
+import hobby_garden.hobby_garden_server.user.service.UserService;
 import io.micrometer.common.lang.NonNullApi;
+import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.bson.json.JsonObject;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
@@ -29,19 +37,64 @@ import java.sql.Timestamp;
 @Component
 @NonNullApi
 @AllArgsConstructor
-public class HttpLoggingFilter extends OncePerRequestFilter {
+public class ApplicationFilter extends OncePerRequestFilter {
 
-    final LogRepository logRepository;
+    private final LogRepository logRepository;
+    private final JWTService jwtService;
+    private final UserService userService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        //* Log mapper
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        logFilter(request, response, filterChain);
+        authenticationFilter(request, response, filterChain);
+    }
+
+    private void authenticationFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        final String bearer = "Bearer ";
+        final String authorizationHeader = request.getHeader("Authorization");
+        final String jwt;
+        final String username;
+
+        if (StringUtils.isEmpty(authorizationHeader)
+                || !org.apache.commons.lang3.StringUtils.startsWith(authorizationHeader, bearer)) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        jwt = authorizationHeader.substring(bearer.length());
+        username = jwtService.extractUserName(jwt);
+
+        if (StringUtils.isNotEmpty(username) || SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = userService.userDetailsService().loadUserByUsername(username);
+
+            if (jwtService.isTokenValid(jwt, userDetails)) {
+                SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+
+                UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities());
+
+                token.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                securityContext.setAuthentication(token);
+                SecurityContextHolder.setContext(securityContext);
+            }
+        }
+        filterChain.doFilter(request, response);
+    }
+
+    private void logFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws IOException, ServletException {
+        // * Log mapper
         LogMapper logMapper = new LogMapper();
 
-        //* start time
+        // * start time
         long startTime = System.currentTimeMillis();
 
-        //* wrap request and response
+        // * wrap request and response
         ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
 
@@ -59,10 +112,9 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
         String requestBody = new String(requestWrapper.getContentAsByteArray(), request.getCharacterEncoding());
 
         // if request body is empty, set it to empty object
-        if(requestBody.isEmpty() || requestBody.isBlank() || requestBody.equals(" ")){
+        if (requestBody.isEmpty() || requestBody.isBlank() || requestBody.equals(" ")) {
             requestPayload = new JsonObject("{}");
-        }
-        else{
+        } else {
             requestPayload = logMapper.stringToObject(requestBody);
         }
 
@@ -73,10 +125,9 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
         result = new String(responseWrapper.getContentAsByteArray(), StandardCharsets.UTF_8);
 
         // if response body is empty, set it to empty object
-        if(result.isEmpty() || result.isBlank() || result.equals(" ")){
+        if (result.isEmpty() || result.isBlank() || result.equals(" ")) {
             responseBody = new JsonObject("{}");
-        }
-        else{
+        } else {
             responseBody = logMapper.stringToObject(result);
         }
 
@@ -90,20 +141,17 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
                         requestWrapper.getMethod(),
                         timestampStr,
                         requestWrapper.getRequestURI(),
-                        requestPayload
-                ),
+                        requestPayload),
                 new LogResponseModel<>(
                         findLogLevel(responseWrapper.getStatus()),
                         responseWrapper.getStatus(),
                         responseTimeStr,
                         responseWrapper.getBufferSize(),
-                        responseBody
-                ),
-                null
-        ));
+                        responseBody),
+                null));
     }
 
-    private LogLevel findLogLevel(int status){
+    private LogLevel findLogLevel(int status) {
         return switch (status) {
             case 400 -> LogLevel.WARNING;
             case 500 -> LogLevel.ERROR;
@@ -111,4 +159,3 @@ public class HttpLoggingFilter extends OncePerRequestFilter {
         };
     }
 }
-

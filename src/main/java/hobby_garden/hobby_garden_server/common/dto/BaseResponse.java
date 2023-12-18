@@ -11,7 +11,9 @@ import lombok.Data;
 public class BaseResponse<T> {
 
     private final boolean success;
+
     private final String message;
+
     @Nullable
     private final T data;
 }

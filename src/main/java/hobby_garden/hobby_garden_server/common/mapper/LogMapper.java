@@ -1,10 +1,11 @@
 package hobby_garden.hobby_garden_server.common.mapper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hobby_garden.hobby_garden_server.common.constants.Strings;
+import hobby_garden.hobby_garden_server.common.exception.exceptions.UnknownException;
 import java.util.HashMap;
 
 public class LogMapper {
-
     public Object stringToObject(String body) {
         try {
             // * object mapper, convert object to hashmap
@@ -15,8 +16,7 @@ public class LogMapper {
             // HashMap.class), Object.class) - convert HashMap to
             return mapper.convertValue(mapper.readValue(body, HashMap.class), Object.class);
         } catch (Exception e) {
-            System.out.println("Error: " + e);
-            return new Object();
+            throw new UnknownException(Strings.unknownError + " " + e.getMessage());
         }
     }
 }

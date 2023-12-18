@@ -17,8 +17,8 @@ public class GlobalExceptionHandling {
     }
 
     @ExceptionHandler(UnknownException.class)
-    public String handleUnknownException(UnknownException e) {
-        return "Unknown exception";
+    public ResponseEntity<BaseResponse<Object>> handleUnknownException(UnknownException e) {
+        return ResponseEntity.badRequest().body(new BaseResponse<>(false, e.getMessage(), null));
     }
 
     @ExceptionHandler(UserAlreadyExist.class)
