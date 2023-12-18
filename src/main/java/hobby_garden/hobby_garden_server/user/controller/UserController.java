@@ -1,7 +1,6 @@
 package hobby_garden.hobby_garden_server.user.controller;
 
 import hobby_garden.hobby_garden_server.common.dto.BaseResponse;
-import hobby_garden.hobby_garden_server.log.repository.LogRepository;
 import hobby_garden.hobby_garden_server.user.dto.request.CreateUser;
 import hobby_garden.hobby_garden_server.user.dto.response.UserResponse;
 import hobby_garden.hobby_garden_server.user.service.UserService;
