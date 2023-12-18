@@ -10,6 +10,9 @@ import hobby_garden.hobby_garden_server.user.dto.response.UserResponse;
 import hobby_garden.hobby_garden_server.user.entity.User;
 import hobby_garden.hobby_garden_server.user.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,11 +22,18 @@ public class UserServiceImpl  implements UserService {
     private final PasswordMapper passwordMapper;
 
     @Override
+    public UserDetailsService userDetailsService() {
+        return username -> userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(Strings.userNotFound));
+    }
+
+    @Override
     public BaseResponse<UserResponse> createUser(CreateUser createUser) {
         //* check if user with this username already exists
-        if(userRepository.findByUsername(createUser.getUsername()) != null){
+        if(userRepository.findByUsername(createUser.getUsername()).isPresent()){
             throw new UserAlreadyExist(Strings.usernameInUse);
         }
+
 
         //* create new user entity model
         User user = new User(
@@ -52,7 +62,7 @@ public class UserServiceImpl  implements UserService {
 
             return new BaseResponse<>(true, Strings.userCreated, response);
         } catch (Exception e) {
-            throw new UnknownException(Strings.unknownExceptionWhileCreatingUser);
+            throw new UnknownException(Strings.unknownExceptionWhileCreatingUser + " " + e.getMessage());
         }
     }
 }
