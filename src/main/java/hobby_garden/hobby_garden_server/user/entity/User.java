@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.management.relation.Role;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -41,6 +42,9 @@ public class User implements UserDetails {
 
     @Property("created_at")
     private LocalDateTime createdAt;
+
+    @Property("role")
+    private Roles role;
 
     //* JWT token implementation
     @Override

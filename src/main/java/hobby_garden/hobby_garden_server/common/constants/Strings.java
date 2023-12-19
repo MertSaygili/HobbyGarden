@@ -9,6 +9,7 @@ public  class Strings {
     public static String unknownExceptionWhileCreatingUser = "Unknown exception while creating user";
     public static String userCreated = "User created successfully";
     public static String userNotFound = "User not found";
+    public static String userSignedIn = "User logged in";
 
     //* Unknown error
     public static String unknownError = "Unknown error";
