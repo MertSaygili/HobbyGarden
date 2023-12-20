@@ -4,7 +4,6 @@ import hobby_garden.hobby_garden_server.user.entity.User;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 

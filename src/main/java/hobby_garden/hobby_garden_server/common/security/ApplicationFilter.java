@@ -6,6 +6,7 @@ import hobby_garden.hobby_garden_server.log.model.LogModel;
 import hobby_garden.hobby_garden_server.log.model.LogRequestModel;
 import hobby_garden.hobby_garden_server.log.model.LogResponseModel;
 import hobby_garden.hobby_garden_server.log.repository.LogRepository;
+import hobby_garden.hobby_garden_server.user.service.CustomUserDetailsService;
 import hobby_garden.hobby_garden_server.user.service.JWTService;
 import hobby_garden.hobby_garden_server.user.service.UserService;
 import io.micrometer.common.lang.NonNullApi;
@@ -43,9 +44,10 @@ import java.sql.Timestamp;
 public class ApplicationFilter extends OncePerRequestFilter {
 
     private final LogRepository logRepository;
+    private final JWTService jwtService;
+    private final CustomUserDetailsService userService;
 
     @Override
-<<<<<<< HEAD
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
@@ -61,8 +63,7 @@ public class ApplicationFilter extends OncePerRequestFilter {
 
     }
 
-    private void authenticationFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    private void authenticationFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String bearer = "Bearer ";
         final String authorizationHeader = request.getHeader("Authorization");
         final String jwt;
@@ -94,26 +95,16 @@ public class ApplicationFilter extends OncePerRequestFilter {
         }
     }
 
-    private void logFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws IOException, ServletException {
-=======
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    private void logFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         // * Log mapper
         LogMapper logMapper = new LogMapper();
 
         // * start time
         long startTime = System.currentTimeMillis();
->>>>>>> add553c72abf9e54a352794a784fb2b79067e52f
 
         // * wrap request and response
         ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
-
-        // * Log mapper
-        LogMapper logMapper = new LogMapper();
-
-        // * start time
-        long startTime = System.currentTimeMillis();
 
         // calculate response time
         long responseTime = System.currentTimeMillis() - startTime;
