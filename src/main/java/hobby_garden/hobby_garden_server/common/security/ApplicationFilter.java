@@ -15,7 +15,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.bson.json.JsonObject;
+import org.springframework.context.annotation.Bean;
+import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,14 +39,13 @@ import java.sql.Timestamp;
 
 @Component
 @NonNullApi
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ApplicationFilter extends OncePerRequestFilter {
 
     private final LogRepository logRepository;
-    private final JWTService jwtService;
-    private final UserService userService;
 
     @Override
+<<<<<<< HEAD
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
@@ -94,6 +96,14 @@ public class ApplicationFilter extends OncePerRequestFilter {
 
     private void logFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
+=======
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        // * Log mapper
+        LogMapper logMapper = new LogMapper();
+
+        // * start time
+        long startTime = System.currentTimeMillis();
+>>>>>>> add553c72abf9e54a352794a784fb2b79067e52f
 
         // * wrap request and response
         ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);

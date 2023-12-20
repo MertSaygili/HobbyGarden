@@ -2,63 +2,79 @@ package hobby_garden.hobby_garden_server.user.service;
 
 import hobby_garden.hobby_garden_server.common.constants.Strings;
 import hobby_garden.hobby_garden_server.common.dto.BaseResponse;
+import hobby_garden.hobby_garden_server.common.enums.Roles;
 import hobby_garden.hobby_garden_server.common.exception.exceptions.UnknownException;
 import hobby_garden.hobby_garden_server.common.exception.exceptions.UserAlreadyExist;
-import hobby_garden.hobby_garden_server.common.mapper.PasswordMapper;
-import hobby_garden.hobby_garden_server.user.dto.request.CreateUser;
-import hobby_garden.hobby_garden_server.user.dto.response.UserResponse;
+import hobby_garden.hobby_garden_server.user.dto.request.SignInRequest;
+import hobby_garden.hobby_garden_server.user.dto.request.SignUpRequest;
+import hobby_garden.hobby_garden_server.user.dto.response.SignInResponse;
 import hobby_garden.hobby_garden_server.user.entity.User;
 import hobby_garden.hobby_garden_server.user.repository.UserRepository;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.HashMap;
+
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final PasswordMapper passwordMapper;
+    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordMapper;
+    private final JWTService jwtService;
 
     @Override
-    public UserDetailsService userDetailsService() {
-        return username -> userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException(Strings.userNotFound));
+    public BaseResponse<SignInResponse> signIn(SignInRequest signInRequest) {
+        if(userRepository.findByUsername(signInRequest.getUsername()).isEmpty()) {
+            throw new UsernameNotFoundException(Strings.userNotFound);
+        }
+
+        User user = userRepository.findByUsername(signInRequest.getUsername()).get();
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                signInRequest.getUsername(),
+                signInRequest.getPassword()
+        ));
+        String jwt = jwtService.generateToken(user);
+        String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
+
+        SignInResponse response = new SignInResponse(
+                jwt,
+                user.getUserId(),
+                refreshToken
+        );
+
+        return new BaseResponse<>(true, Strings.userSignedIn, response);
     }
 
     @Override
-    public BaseResponse<UserResponse> createUser(CreateUser createUser) {
-        // * check if user with this username already exists
-        if (userRepository.findByUsername(createUser.getUsername()).isPresent()) {
+    public BaseResponse<Object> signUp(SignUpRequest signUpRequest) {
+        if(userRepository.findByUsername(signUpRequest.getUsername()).isPresent()) {
             throw new UserAlreadyExist(Strings.usernameInUse);
         }
 
-        // * create new user entity model
-        User user = new User(
-                null,
-                createUser.getUsername(),
-                createUser.getFirstNameLastName(),
-                passwordMapper.encode(createUser.getPassword()),
-                createUser.getEmail(),
-                createUser.getHobbies(),
-                createUser.getCreatedAt());
+        User user = new User();
+        user.setUsername(signUpRequest.getUsername());
+        user.setPassword(passwordMapper.encode(signUpRequest.getPassword()));
+        user.setFirstNameLastName(signUpRequest.getFirstNameLastName());
+        user.setEmail(signUpRequest.getEmail());
+        user.setHobbies(signUpRequest.getHobbies());
+        user.setCreatedAt(LocalDateTime.now());
+        user.setRole(Roles.USER);
+
 
         try {
-            // save user to db
-            User newUser = userRepository.save(user);
-
-            // create response
-            UserResponse response = new UserResponse(
-                    newUser.getUserId(),
-                    newUser.getEmail(),
-                    newUser.getUsername(),
-                    newUser.getUsername(),
-                    newUser.getHobbies(),
-                    newUser.getCreatedAt().toString());
-
-            return new BaseResponse<>(true, Strings.userCreated, response);
+            userRepository.save(user);
+            return new BaseResponse<>(true, Strings.userCreated, null);
         } catch (Exception e) {
             throw new UnknownException(Strings.unknownExceptionWhileCreatingUser + " " + e.getMessage());
         }
+
     }
 }

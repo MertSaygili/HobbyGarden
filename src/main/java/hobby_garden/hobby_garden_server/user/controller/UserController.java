@@ -1,31 +1,27 @@
 package hobby_garden.hobby_garden_server.user.controller;
 
 import hobby_garden.hobby_garden_server.common.dto.BaseResponse;
-import hobby_garden.hobby_garden_server.user.dto.request.CreateUser;
-import hobby_garden.hobby_garden_server.user.dto.response.UserResponse;
+import hobby_garden.hobby_garden_server.user.dto.request.SignInRequest;
+import hobby_garden.hobby_garden_server.user.dto.request.SignUpRequest;
+import hobby_garden.hobby_garden_server.user.dto.response.SignInResponse;
 import hobby_garden.hobby_garden_server.user.service.UserService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/user")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/{id}")
-    public BaseResponse<String> getUser(@RequestParam(value = "id", defaultValue = "0") String id) {
-        return new BaseResponse<String>(true, "Asd", "Asd");
+    @PostMapping("/sign-in")
+    public BaseResponse<SignInResponse> signIn(@RequestBody SignInRequest user) {
+        return userService.signIn(user);
     }
 
-    @PostMapping("/create")
-    public BaseResponse<UserResponse> createUser(@RequestBody CreateUser user) {
-        return userService.createUser(user);
-    }
-
-    @PostMapping("/log")
-    public BaseResponse<String> logUser() {
-        return new BaseResponse<String>(false, "User already exists", "selam");
+    @PostMapping("/sign-up")
+    public BaseResponse<Object> signUp(@RequestBody SignUpRequest user) {
+        return userService.signUp(user);
     }
 }
