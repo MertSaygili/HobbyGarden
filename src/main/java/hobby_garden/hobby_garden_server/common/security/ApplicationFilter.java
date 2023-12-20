@@ -46,8 +46,17 @@ public class ApplicationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
+        if(request.getRequestURI().equals("/swagger-ui/index.html")){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // * log filter and authentication filter
         logFilter(request, response, filterChain);
         authenticationFilter(request, response, filterChain);
+        filterChain.doFilter(request, response);
+
     }
 
     private void authenticationFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -57,9 +66,7 @@ public class ApplicationFilter extends OncePerRequestFilter {
         final String jwt;
         final String username;
 
-        if (StringUtils.isEmpty(authorizationHeader)
-                || !org.apache.commons.lang3.StringUtils.startsWith(authorizationHeader, bearer)) {
-            filterChain.doFilter(request, response);
+        if (StringUtils.isEmpty(authorizationHeader) || !org.apache.commons.lang3.StringUtils.startsWith(authorizationHeader, bearer)) {
             return;
         }
 
@@ -83,22 +90,20 @@ public class ApplicationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.setContext(securityContext);
             }
         }
-        filterChain.doFilter(request, response);
     }
 
     private void logFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
-        // * Log mapper
-        LogMapper logMapper = new LogMapper();
-
-        // * start time
-        long startTime = System.currentTimeMillis();
 
         // * wrap request and response
         ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
 
-        filterChain.doFilter(requestWrapper, responseWrapper);
+        // * Log mapper
+        LogMapper logMapper = new LogMapper();
+
+        // * start time
+        long startTime = System.currentTimeMillis();
 
         // calculate response time
         long responseTime = System.currentTimeMillis() - startTime;

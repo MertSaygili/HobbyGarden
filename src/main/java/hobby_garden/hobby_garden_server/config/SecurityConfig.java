@@ -19,6 +19,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -26,20 +28,22 @@ public class SecurityConfig {
 
     private final ApplicationFilter applicationFilter;
     private final UserService userService;
-
+    public static String[] whiteList = new String[] { "/swagger-ui/index.html", "/swagger-resources/**",
+            "/v2/api-docs**", "/webjars/**", "/swaggerfox.js", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui/**"};
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/user/**")
-                        .permitAll()
+                        .requestMatchers(whiteList).permitAll()
+                        .requestMatchers("/api/user/**").permitAll()
                         .requestMatchers("/api/**")
                         .hasAnyAuthority(Roles.ADMIN.name()).requestMatchers("/api/**")
                         .hasAnyAuthority(Roles.USER.name())
-                        .anyRequest()
-                        .authenticated()
+                        .anyRequest().authenticated()
 
                 )
+                // white list
+
                 .sessionManagement(
                         sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
