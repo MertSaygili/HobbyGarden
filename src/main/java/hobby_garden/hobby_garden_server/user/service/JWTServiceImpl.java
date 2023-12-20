@@ -60,7 +60,7 @@ public class JWTServiceImpl implements JWTService{
         return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
     }
 
-    private @NotNull Key getSignInKey() {
+    private Key getSignInKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 

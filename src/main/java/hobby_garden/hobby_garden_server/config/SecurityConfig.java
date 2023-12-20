@@ -2,7 +2,10 @@ package hobby_garden.hobby_garden_server.config;
 
 import hobby_garden.hobby_garden_server.common.enums.Roles;
 import hobby_garden.hobby_garden_server.common.security.ApplicationFilter;
+import hobby_garden.hobby_garden_server.common.security.JwtTokenFilter;
+import hobby_garden.hobby_garden_server.user.service.CustomUserDetailsService;
 import hobby_garden.hobby_garden_server.user.service.UserService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,9 +26,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
-    private final ApplicationFilter applicationFilter;
-    private final UserService userService;
+    private final JwtTokenFilter jwtTokenFilter;
+    private final CustomUserDetailsService userService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -33,17 +35,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/user/**")
                         .permitAll()
-                        .requestMatchers("/api/**")
-                        .hasAnyAuthority(Roles.ADMIN.name()).requestMatchers("/api/**")
-                        .hasAnyAuthority(Roles.USER.name())
-                        .anyRequest()
-                        .authenticated()
+                        .requestMatchers("/api/**").hasAnyAuthority(Roles.ADMIN.name(), Roles.USER.name())
+                        .anyRequest().authenticated()
 
                 )
-                .sessionManagement(
-                        sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(applicationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

@@ -8,8 +8,6 @@ import hobby_garden.hobby_garden_server.user.dto.response.UserResponse;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService {
-
-     UserDetailsService userDetailsService();
      BaseResponse<SignInResponse> signIn(SignInRequest signInRequest);
      BaseResponse<Object> signUp(SignUpRequest signUpRequest);
 }

@@ -16,8 +16,6 @@ import java.util.Collection;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
-@ToString
 @Node("User")
 public class User implements UserDetails {
 

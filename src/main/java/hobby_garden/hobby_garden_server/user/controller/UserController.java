@@ -5,14 +5,12 @@ import hobby_garden.hobby_garden_server.user.dto.request.SignInRequest;
 import hobby_garden.hobby_garden_server.user.dto.request.SignUpRequest;
 import hobby_garden.hobby_garden_server.user.dto.response.SignInResponse;
 import hobby_garden.hobby_garden_server.user.service.UserService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-// swagger path = http://localhost:8080/swagger-ui/index.html
 
 @RestController
 @RequestMapping("api/user")
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
