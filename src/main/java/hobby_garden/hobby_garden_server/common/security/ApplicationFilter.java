@@ -48,8 +48,7 @@ public class ApplicationFilter extends OncePerRequestFilter {
     private final CustomUserDetailsService userService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         if(request.getRequestURI().equals("/swagger-ui/index.html")){
             filterChain.doFilter(request, response);
@@ -59,7 +58,6 @@ public class ApplicationFilter extends OncePerRequestFilter {
         // * log filter and authentication filter
         logFilter(request, response, filterChain);
         authenticationFilter(request, response, filterChain);
-        filterChain.doFilter(request, response);
 
     }
 
@@ -96,15 +94,16 @@ public class ApplicationFilter extends OncePerRequestFilter {
     }
 
     private void logFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // * Log mapper
         LogMapper logMapper = new LogMapper();
 
-        // * start time
+        //* start time
         long startTime = System.currentTimeMillis();
 
-        // * wrap request and response
+        //* wrap request and response
         ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
+
+        filterChain.doFilter(requestWrapper, responseWrapper);
 
         // calculate response time
         long responseTime = System.currentTimeMillis() - startTime;
@@ -118,9 +117,10 @@ public class ApplicationFilter extends OncePerRequestFilter {
         String requestBody = new String(requestWrapper.getContentAsByteArray(), request.getCharacterEncoding());
 
         // if request body is empty, set it to empty object
-        if (requestBody.isEmpty() || requestBody.isBlank() || requestBody.equals(" ")) {
+        if(requestBody.isEmpty() || requestBody.isBlank() || requestBody.equals(" ")){
             requestPayload = new JsonObject("{}");
-        } else {
+        }
+        else{
             requestPayload = logMapper.stringToObject(requestBody);
         }
 
@@ -131,9 +131,10 @@ public class ApplicationFilter extends OncePerRequestFilter {
         result = new String(responseWrapper.getContentAsByteArray(), StandardCharsets.UTF_8);
 
         // if response body is empty, set it to empty object
-        if (result.isEmpty() || result.isBlank() || result.equals(" ")) {
+        if(result.isEmpty() || result.isBlank() || result.equals(" ")){
             responseBody = new JsonObject("{}");
-        } else {
+        }
+        else{
             responseBody = logMapper.stringToObject(result);
         }
 
@@ -147,14 +148,17 @@ public class ApplicationFilter extends OncePerRequestFilter {
                         requestWrapper.getMethod(),
                         timestampStr,
                         requestWrapper.getRequestURI(),
-                        requestPayload),
+                        requestPayload
+                ),
                 new LogResponseModel<>(
                         findLogLevel(responseWrapper.getStatus()),
                         responseWrapper.getStatus(),
                         responseTimeStr,
                         responseWrapper.getBufferSize(),
-                        responseBody),
-                null));
+                        responseBody
+                ),
+                null
+        ));
     }
 
     private LogLevel findLogLevel(int status) {

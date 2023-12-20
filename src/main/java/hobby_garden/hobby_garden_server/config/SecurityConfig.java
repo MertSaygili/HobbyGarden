@@ -2,10 +2,7 @@ package hobby_garden.hobby_garden_server.config;
 
 import hobby_garden.hobby_garden_server.common.enums.Roles;
 import hobby_garden.hobby_garden_server.common.security.ApplicationFilter;
-import hobby_garden.hobby_garden_server.common.security.JwtTokenFilter;
 import hobby_garden.hobby_garden_server.user.service.CustomUserDetailsService;
-import hobby_garden.hobby_garden_server.user.service.UserService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,8 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import java.util.List;
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -31,7 +26,6 @@ public class SecurityConfig {
     private final ApplicationFilter applicationFilter;
     public static String[] whiteList = new String[] { "/swagger-ui/index.html", "/swagger-resources/**",
             "/v2/api-docs**", "/webjars/**", "/swaggerfox.js", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui/**"};
-    private final JwtTokenFilter jwtTokenFilter;
     private final CustomUserDetailsService userService;
 
     @Bean
