@@ -36,11 +36,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public BaseResponse<SignInResponse> signIn(SignInRequest signInRequest) {
+        //* check if user exist
         if(userRepository.findByUsername(signInRequest.getUsername()).isEmpty()) {
             throw new UsernameNotFoundException(Strings.userNotFound);
         }
 
+        //* get user from db
         User user = userRepository.findByUsername(signInRequest.getUsername()).get();
+
+        //* authenticate user, generate jwt and refresh token
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 signInRequest.getUsername(),
                 signInRequest.getPassword()
@@ -48,6 +52,7 @@ public class UserServiceImpl implements UserService {
         String jwt = jwtService.generateToken(user);
         String refreshToken = jwtService.generateRefreshToken(new HashMap<>(), user);
 
+        //* create response body and return
         SignInResponse response = new SignInResponse(
                 jwt,
                 user.getUserId(),
