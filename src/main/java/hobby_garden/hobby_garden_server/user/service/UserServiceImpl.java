@@ -7,8 +7,10 @@ import hobby_garden.hobby_garden_server.common.exception.exceptions.UnknownExcep
 import hobby_garden.hobby_garden_server.common.exception.exceptions.UserAlreadyExist;
 import hobby_garden.hobby_garden_server.hobby.model.Hobby;
 import hobby_garden.hobby_garden_server.hobby.service.HobbyService;
+import hobby_garden.hobby_garden_server.user.dto.request.ForgotPasswordRequest;
 import hobby_garden.hobby_garden_server.user.dto.request.SignInRequest;
 import hobby_garden.hobby_garden_server.user.dto.request.SignUpRequest;
+import hobby_garden.hobby_garden_server.user.dto.request.UpdatePasswordRequest;
 import hobby_garden.hobby_garden_server.user.dto.response.SignInResponse;
 import hobby_garden.hobby_garden_server.user.model.User;
 import hobby_garden.hobby_garden_server.user.repository.UserRepository;
@@ -20,10 +22,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -92,5 +91,54 @@ public class UserServiceImpl implements UserService {
         } catch (Exception e) {
             throw new UnknownException(Strings.unknownExceptionWhileCreatingUser + " " + e.getMessage());
         }
+    }
+
+    @Override
+    public BaseResponse<String> updatePassword(UpdatePasswordRequest updatePasswordRequest) {
+        //* get user from db
+        User user = getUserNameByToken(updatePasswordRequest.getUserToken());
+
+        //* check if old password is correct
+        if(passwordMapper.encode(updatePasswordRequest.getOldPassword()).equals(user.getPassword())) {
+            user.setPassword(passwordMapper.encode(updatePasswordRequest.getNewPassword()));
+            userRepository.save(user);
+            try{
+                userRepository.save(user);
+                return new BaseResponse<>(true, Strings.userUpdated, null);
+
+            } catch (Exception e) {
+                throw new UnknownException(Strings.unknownExceptionWhileUpdatingUser + " " + e.getMessage());
+            }
+        }
+        else{
+            return new BaseResponse<>(false, Strings.wrongUserPassword, null);
+        }
+    }
+
+    @Override
+    public BaseResponse<String> forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
+        User user = getUserNameByToken(forgotPasswordRequest.getUserToken());
+
+        //* check email is correct, then send [email] with new password
+        if(user.getEmail().equals(forgotPasswordRequest.getEmail())) {
+            user.setPassword(passwordMapper.encode(forgotPasswordRequest.getNewPassword()));
+            userRepository.save(user);
+            try{
+                userRepository.save(user);
+                return new BaseResponse<>(true, Strings.passwordChanged, null);
+
+            } catch (Exception e) {
+                throw new UnknownException(Strings.unknownExceptionWhileUpdatingUser + " " + e.getMessage());
+            }
+        }
+        else{
+            return new BaseResponse<>(false, Strings.userNotFound, null);
+        }
+    }
+
+
+    private User getUserNameByToken(String token) {
+        String username = jwtService.extractUserName(token);
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(Strings.userNotFound));
     }
 }
