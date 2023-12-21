@@ -8,18 +8,14 @@ import hobby_garden.hobby_garden_server.log.model.LogResponseModel;
 import hobby_garden.hobby_garden_server.log.repository.LogRepository;
 import hobby_garden.hobby_garden_server.user.service.CustomUserDetailsService;
 import hobby_garden.hobby_garden_server.user.service.JWTService;
-import hobby_garden.hobby_garden_server.user.service.UserService;
 import io.micrometer.common.lang.NonNullApi;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.bson.json.JsonObject;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -57,11 +53,11 @@ public class ApplicationFilter extends OncePerRequestFilter {
 
         // * log filter and authentication filter
         logFilter(request, response, filterChain);
-        authenticationFilter(request, response, filterChain);
+        authenticationFilter(request);
 
     }
 
-    private void authenticationFilter(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    private void authenticationFilter(HttpServletRequest request) {
         final String bearer = "Bearer ";
         final String authorizationHeader = request.getHeader("Authorization");
         final String jwt;

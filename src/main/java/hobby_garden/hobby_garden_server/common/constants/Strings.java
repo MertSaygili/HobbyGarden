@@ -11,6 +11,10 @@ public  class Strings {
     public static String userNotFound = "User not found";
     public static String userSignedIn = "User logged in";
 
+    //* Hobby related strings
+    public static String hobbyNameIsEmpty = "Hobby name is empty";
+    public static String errorOccurWhileCreatingHobby = "Error occur while creating hobby";
+
     //* Unknown error
     public static String unknownError = "Unknown error";
 }

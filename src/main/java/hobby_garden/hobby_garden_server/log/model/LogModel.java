@@ -1,6 +1,6 @@
 package hobby_garden.hobby_garden_server.log.model;
 
-import hobby_garden.hobby_garden_server.user.entity.User;
+import hobby_garden.hobby_garden_server.user.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;

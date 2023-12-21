@@ -1,26 +1,27 @@
-package hobby_garden.hobby_garden_server.user.entity;
+package hobby_garden.hobby_garden_server.user.model;
 
 import hobby_garden.hobby_garden_server.common.enums.Roles;
-import lombok.AllArgsConstructor;
+import hobby_garden.hobby_garden_server.hobby.model.Hobby;
 import lombok.Data;
-import lombok.ToString;
+import lombok.NoArgsConstructor;
 import org.springframework.data.neo4j.core.schema.*;
 import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.management.relation.Role;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
 @Data
 @Node("User")
+@NoArgsConstructor
 public class User implements UserDetails {
 
-    @GeneratedValue(UUIDStringGenerator.class)
     @Id
+    @GeneratedValue(generatorClass = UUIDStringGenerator.class)
+    @Property("user_id")
     private String userId;
 
     @Property("username")
@@ -35,8 +36,8 @@ public class User implements UserDetails {
     @Property("email")
     private String email;
 
-    @Property("hobbies")
-    private List<String> hobbies;
+    @Relationship(type = "HAS_HOBBY", direction = Relationship.Direction.OUTGOING)
+    private List<Hobby> hobbies;
 
     @Property("created_at")
     private LocalDateTime createdAt;
