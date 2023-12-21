@@ -26,8 +26,8 @@ public class SecurityConfig {
     private final ApplicationFilter applicationFilter;
     public static String[] whiteList = new String[] { "/swagger-ui/index.html", "/swagger-resources/**",
             "/v2/api-docs**", "/webjars/**", "/swaggerfox.js", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui/**"};
-    private final CustomUserDetailsService userService;
 
+    private final CustomUserDetailsService userService;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)

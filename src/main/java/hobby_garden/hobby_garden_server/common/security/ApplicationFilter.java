@@ -102,8 +102,8 @@ public class ApplicationFilter extends OncePerRequestFilter {
         //* wrap request and response
         ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
         ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
-
         filterChain.doFilter(requestWrapper, responseWrapper);
+
 
         // calculate response time
         long responseTime = System.currentTimeMillis() - startTime;
