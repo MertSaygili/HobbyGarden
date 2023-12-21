@@ -14,6 +14,12 @@ public  class Strings {
     //* Hobby related strings
     public static String hobbyNameIsEmpty = "Hobby name is empty";
     public static String errorOccurWhileCreatingHobby = "Error occur while creating hobby";
+    public static String hobbyDeleted = "Hobby deleted successfully";
+    public static String userAlreadyHasThisHobby = "User already has this hobby";
+    public static String hobbyAdded = "Hobby added successfully";
+    public static String hobbyNotFound = "Hobby not found";
+
+    public static String errorOccurWhileAddingHobby = "Error occur while adding hobby";
 
     //* Unknown error
     public static String unknownError = "Unknown error";

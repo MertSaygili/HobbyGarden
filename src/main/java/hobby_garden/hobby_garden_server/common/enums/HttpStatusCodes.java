@@ -4,7 +4,6 @@ import lombok.Getter;
 
 //* Http status codes enum, used to determine the http status code of the log response
 
-
 @Getter
 public enum HttpStatusCodes {
     OK(200),

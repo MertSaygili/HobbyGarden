@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @AllArgsConstructor
+@SuppressWarnings({"ClassCanBeRecord"})
 public class BaseResponse<T> {
 
     private final boolean success;

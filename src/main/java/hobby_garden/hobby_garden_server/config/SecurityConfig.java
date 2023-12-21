@@ -34,10 +34,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(whiteList).permitAll()
                         .requestMatchers("/api/user/**").permitAll()
+                        .requestMatchers("/api/hobby/**").permitAll()
                         .requestMatchers("/api/**")
                         .hasAnyAuthority(Roles.ADMIN.name()).requestMatchers("/api/**")
-                        .hasAnyAuthority(Roles.USER.name())
-                        .anyRequest().authenticated()
+                        .hasAnyAuthority(Roles.USER.name()).requestMatchers("/api/**")
+                        .authenticated()
 
                 )
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
