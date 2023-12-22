@@ -5,6 +5,7 @@ import hobby_garden.hobby_garden_server.common.dto.BaseResponse;
 import hobby_garden.hobby_garden_server.common.exception.exceptions.*;
 import hobby_garden.hobby_garden_server.hobby.dto.request.AddHobbyToUser;
 import hobby_garden.hobby_garden_server.hobby.dto.request.DeleteHobbyRequest;
+import hobby_garden.hobby_garden_server.hobby.dto.response.AllHobbiesResponse;
 import hobby_garden.hobby_garden_server.hobby.model.Hobby;
 import hobby_garden.hobby_garden_server.hobby.repository.HobbyRepository;
 import hobby_garden.hobby_garden_server.user.model.User;
@@ -115,5 +116,15 @@ public class HobbyServiceImpl implements HobbyService{
         catch (Exception e){
             throw new UnknownException(Strings.errorOccurWhileAddingHobby + " " + e.getMessage());
         }
+    }
+
+    @Override
+    public BaseResponse<AllHobbiesResponse> getHobbies() {
+        //* get all hobbies from db
+        AllHobbiesResponse allHobbiesResponse = new AllHobbiesResponse();
+        allHobbiesResponse.setHobbies(hobbyRepository.findAll());
+
+        //* return response
+        return new BaseResponse<>(true, Strings.hobbiesFound, allHobbiesResponse);
     }
 }

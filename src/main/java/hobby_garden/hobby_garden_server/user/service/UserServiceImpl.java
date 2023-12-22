@@ -76,6 +76,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(signUpRequest.getEmail());
         user.setCreatedAt(LocalDateTime.now());
         user.setRole(Roles.USER);
+        user.setHobbies(new ArrayList<>(Collections.emptyList()));
 
         //* user hobby relationship integration
         List<Hobby> userHobbies = new ArrayList<>(Collections.emptyList());

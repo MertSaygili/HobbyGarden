@@ -24,8 +24,16 @@ public  class Strings {
     public static String userAlreadyHasThisHobby = "User already has this hobby";
     public static String hobbyAdded = "Hobby added successfully";
     public static String hobbyNotFound = "Hobby not found";
-
+    public static String hobbiesFound = "Hobbies found";
     public static String errorOccurWhileAddingHobby = "Error occur while adding hobby";
+
+    //* Post related strings
+    public static String postCreated = "Post created successfully";
+    public static String postNotFound = "Post not found";
+    public static String postDeleted = "Post deleted successfully";
+    public static String postUpdated = "Post updated successfully";
+    public static String postsFound = "Posts found";
+    public static String errorOccurWhileCreatingPost = "Error occur while creating post";
 
     //* Unknown error
     public static String unknownError = "Unknown error";

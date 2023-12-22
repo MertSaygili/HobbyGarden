@@ -2,6 +2,8 @@ package hobby_garden.hobby_garden_server.user.model;
 
 import hobby_garden.hobby_garden_server.common.enums.Roles;
 import hobby_garden.hobby_garden_server.hobby.model.Hobby;
+import hobby_garden.hobby_garden_server.post.model.Post;
+import jakarta.annotation.Nullable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.neo4j.core.schema.*;
@@ -38,6 +40,9 @@ public class User implements UserDetails {
 
     @Relationship(type = "HAS_HOBBY", direction = Relationship.Direction.OUTGOING)
     private List<Hobby> hobbies;
+
+    @Relationship(type = "CREATED_POST", direction = Relationship.Direction.OUTGOING)
+    private List<Post> posts;
 
     @Property("created_at")
     private LocalDateTime createdAt;

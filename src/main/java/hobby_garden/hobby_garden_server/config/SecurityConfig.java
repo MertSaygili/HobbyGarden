@@ -35,6 +35,7 @@ public class SecurityConfig {
                         .requestMatchers(whiteList).permitAll()
                         .requestMatchers("/api/user/**").permitAll()
                         .requestMatchers("/api/hobby/**").permitAll()
+                        .requestMatchers("/api/post/**").permitAll()
                         .requestMatchers("/api/**")
                         .hasAnyAuthority(Roles.ADMIN.name()).requestMatchers("/api/**")
                         .hasAnyAuthority(Roles.USER.name()).requestMatchers("/api/**")
