@@ -2,7 +2,9 @@ package hobby_garden.hobby_garden_server.post.controller;
 
 import com.fasterxml.jackson.databind.ser.Serializers;
 import hobby_garden.hobby_garden_server.common.dto.BaseResponse;
+import hobby_garden.hobby_garden_server.post.dto.request.CommentsRequest;
 import hobby_garden.hobby_garden_server.post.dto.request.CreatePostRequest;
+import hobby_garden.hobby_garden_server.post.dto.request.LikeDislikeRequest;
 import hobby_garden.hobby_garden_server.post.dto.response.CreatePostResponse;
 import hobby_garden.hobby_garden_server.post.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -20,24 +22,24 @@ public class PostController {
         return postService.createPost(requestBody);
     }
 
-    @GetMapping("get/{postId}")
+    @GetMapping("/get/{postId}")
     BaseResponse<String> getPost(@PathVariable Long postId) {
         return null;
     }
 
-    @PostMapping("/like/{postId}")
-    BaseResponse<String> likePost(@PathVariable Long postId) {
-        return null;
+    @PostMapping("/like-unlike")
+    BaseResponse<String> likeUnlikePost(@RequestBody LikeDislikeRequest request) {
+        return postService.likePost(request);
     }
 
-    @PostMapping("/dislike/{postId}")
-    BaseResponse<String> unlikePost(@PathVariable Long postId) {
-        return null;
+    @PostMapping("/dislike-unlike")
+    BaseResponse<String> dislikeUndislikePost(@RequestBody LikeDislikeRequest request) {
+        return postService.dislikePost(request);
     }
 
     @PostMapping("/comment/{postId}")
-    BaseResponse<String> commentPost(@PathVariable Long postId) {
-        return null;
+    BaseResponse<String> commentPost(@RequestBody CommentsRequest request) {
+        return postService.commentPost(request);
     }
 
     @PostMapping("/delete/{postId}")

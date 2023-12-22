@@ -20,7 +20,7 @@ public class Post {
     @Id
     @GeneratedValue(generatorClass = UUIDStringGenerator.class)
     @Property("post_id")
-    String post_id;
+    String postId;
 
     @Property("author")
     @Relationship(type = "CREATED_BY", direction = Relationship.Direction.INCOMING)

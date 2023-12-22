@@ -33,6 +33,11 @@ public  class Strings {
     public static String postDeleted = "Post deleted successfully";
     public static String postUpdated = "Post updated successfully";
     public static String postsFound = "Posts found";
+    public static String userRemoveDislike = "User remove dislike";
+    public static String userDislikedThePost = "User disliked the post";
+    public static String commentedPost = "Commented post";
+    public static String userRemoveLike = "User remove like";
+    public static String userLikedThePost = "User liked the post";
     public static String errorOccurWhileCreatingPost = "Error occur while creating post";
 
     //* Unknown error

@@ -36,6 +36,11 @@ public class GlobalExceptionHandling {
         return ResponseEntity.badRequest().body(new BaseResponse<>(false, e.getMessage(), null));
     }
 
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity<BaseResponse<Object>> handlePostNotFoundException(PostNotFoundException e) {
+        return ResponseEntity.badRequest().body(new BaseResponse<>(false, e.getMessage(), null));
+    }
+
     @ExceptionHandler(ErrorWhileCreatingHobby.class)
     public ResponseEntity<BaseResponse<Object>> handleErrorWhileCreatingHobby(ErrorWhileCreatingHobby e) {
         return ResponseEntity.badRequest().body(new BaseResponse<>(false, e.getMessage(), null));
