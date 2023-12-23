@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService {
     public BaseResponse<SignInResponse> signIn(SignInRequest signInRequest) {
         //* check if user exist
         if(userRepository.findByUsername(signInRequest.getUsername()).isEmpty()) {
-            throw new UsernameNotFoundException(Strings.userNotFound);
+            return new BaseResponse<>(false, Strings.userNotFound, null);
         }
 
         //* get user from db

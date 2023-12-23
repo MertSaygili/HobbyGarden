@@ -13,6 +13,7 @@ import hobby_garden.hobby_garden_server.post.dto.request.CommentsRequest;
 import hobby_garden.hobby_garden_server.post.dto.request.CreatePostRequest;
 import hobby_garden.hobby_garden_server.post.dto.request.LikeDislikeRequest;
 import hobby_garden.hobby_garden_server.post.dto.response.CreatePostResponse;
+import hobby_garden.hobby_garden_server.post.dto.response.UserPostsResponse;
 import hobby_garden.hobby_garden_server.post.model.*;
 import hobby_garden.hobby_garden_server.post.repository.DislikesRepository;
 import hobby_garden.hobby_garden_server.post.repository.LikesRepository;
@@ -21,7 +22,9 @@ import hobby_garden.hobby_garden_server.post.repository.PostRepository;
 import hobby_garden.hobby_garden_server.user.model.User;
 import hobby_garden.hobby_garden_server.user.repository.UserRepository;
 import hobby_garden.hobby_garden_server.user.service.JWTService;
+import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.token.Token;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
@@ -31,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+//TODO like dislike transaction
 
 @Service
 @RequiredArgsConstructor
@@ -103,9 +108,12 @@ public class PostServiceImpl implements PostService {
         //* add media to post
         post.setMedia(medias);
 
-        //* save post
+        //* save post to user and post repositories
         try {
             postRepository.save(post);
+
+            user.getPosts().add(post);
+            userRepository.save(user);
 
             //* return response
             return new BaseResponse<>(true, Strings.postCreated, null);
@@ -199,6 +207,41 @@ public class PostServiceImpl implements PostService {
         //* save post
         postRepository.save(post);
         return new BaseResponse<>(true, Strings.commentedPost, null);
+    }
+
+    @Override
+    public BaseResponse<List<UserPostsResponse>> getUserPosts(String token, String username) {
+        //* get user, check if user exists
+        User user = getUserFromToken(token.split(" ")[1]);
+
+        //* get user posts
+        List<Post> posts = user.getPosts();
+
+        //* create response
+        List<UserPostsResponse> userPostsResponses = new ArrayList<>(Collections.emptyList());
+
+        //* add posts to response
+        for(Post post : posts){
+
+            UserPostsResponse userPostsResponse = new UserPostsResponse();
+
+            userPostsResponse.setPostId(post.getPostId());
+            userPostsResponse.setCreatorName(post.getAuthor().getUsername());
+            userPostsResponse.setTitle(post.getTitle());
+//            userPostsResponse.setContent(post.getContent());
+//            userPostsResponse.setTags(post.getTags());
+            userPostsResponse.setLikes(post.getLikes().size());
+            userPostsResponse.setDislikes(post.getDislikes().size());
+            userPostsResponse.setComments(post.getComments().size());
+//            userPostsResponse.setImage(post.getMedia());
+            userPostsResponse.setCreatedAt(post.getCreatedAt());
+
+            userPostsResponses.add(userPostsResponse);
+        }
+
+        //* return response
+        return new BaseResponse<>(true, Strings.userPostsFetched, userPostsResponses);
+
     }
 
     //* helper methods, extract user from token, check if user exists, etc.

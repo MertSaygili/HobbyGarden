@@ -6,9 +6,14 @@ import hobby_garden.hobby_garden_server.post.dto.request.CommentsRequest;
 import hobby_garden.hobby_garden_server.post.dto.request.CreatePostRequest;
 import hobby_garden.hobby_garden_server.post.dto.request.LikeDislikeRequest;
 import hobby_garden.hobby_garden_server.post.dto.response.CreatePostResponse;
+import hobby_garden.hobby_garden_server.post.dto.response.UserPostsResponse;
 import hobby_garden.hobby_garden_server.post.service.PostService;
+import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.token.Token;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/post")
@@ -17,14 +22,15 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
     private final PostService postService;
 
+    @GetMapping("/get/{username}")
+    BaseResponse<List<UserPostsResponse>> getUserPosts (@RequestHeader(value = "Authorization") String token, @PathVariable("username") String username) {
+        System.out.println("SSSSSSSSSSSSSSSSSSSSSSS");
+        return postService.getUserPosts(token, username);
+    }
+
     @PostMapping("/create")
     BaseResponse<CreatePostResponse> createPost(@RequestBody CreatePostRequest requestBody) {
         return postService.createPost(requestBody);
-    }
-
-    @GetMapping("/get/{postId}")
-    BaseResponse<String> getPost(@PathVariable Long postId) {
-        return null;
     }
 
     @PostMapping("/like-unlike")
