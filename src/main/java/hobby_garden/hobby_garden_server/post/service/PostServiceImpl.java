@@ -15,16 +15,12 @@ import hobby_garden.hobby_garden_server.post.dto.request.LikeDislikeRequest;
 import hobby_garden.hobby_garden_server.post.dto.response.CreatePostResponse;
 import hobby_garden.hobby_garden_server.post.dto.response.UserPostsResponse;
 import hobby_garden.hobby_garden_server.post.model.*;
-import hobby_garden.hobby_garden_server.post.repository.DislikesRepository;
-import hobby_garden.hobby_garden_server.post.repository.LikesRepository;
 import hobby_garden.hobby_garden_server.post.repository.MediaRepository;
 import hobby_garden.hobby_garden_server.post.repository.PostRepository;
 import hobby_garden.hobby_garden_server.user.model.User;
 import hobby_garden.hobby_garden_server.user.repository.UserRepository;
 import hobby_garden.hobby_garden_server.user.service.JWTService;
-import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.token.Token;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
@@ -44,8 +40,6 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final HobbyRepository hobbyRepository;
     private final UserRepository userRepository;
-    private final DislikesRepository dislikesRepository;
-    private final LikesRepository likesRepository;
     private final JWTService jwtService;
     private final MediaRepository mediaRepository;
     private final ImageConverter imageConverter = new ImageConverter();
@@ -139,7 +133,7 @@ public class PostServiceImpl implements PostService {
                 //* if user already liked this post, then remove like
                 post.getLikes().remove(like);
                 postRepository.save(post);
-                likesRepository.delete(like);
+//                postRepository.unlikePost(user.getUserId(), post.getPostId());
                 return new BaseResponse<>(true, Strings.userRemoveLike, null);
             }
         }
@@ -149,12 +143,21 @@ public class PostServiceImpl implements PostService {
         like.setUser(user);
         like.setDate(LocalDateTime.now());
 
-        post.getLikes().add(like);
-        postRepository.save(post);
+        List<Likes> currentLikes = post.getLikes();
+        assert currentLikes != null;
+        currentLikes.add(like);
+        post.setLikes(currentLikes);
 
-        //* if user already liked this post, then remove like
-        return new BaseResponse<>(true, Strings.userLikedThePost, null);
+        try{
+            // postRepository.save(post);
+            postRepository.likePost(user.getUserId(), post.getPostId());
 
+            //* if user already liked this post, then remove like
+            return new BaseResponse<>(true, Strings.userLikedThePost, null);
+        }
+        catch (Exception e){
+            throw new UnknownException(Strings.errorWhileLikePost + " " + e.getMessage());
+        }
     }
 
     @Override
@@ -171,10 +174,10 @@ public class PostServiceImpl implements PostService {
         for(Dislikes dislike : dislikes){
             if(dislike.getUser().getUserId().equals(user.getUserId())){
                 //* if user already liked this post, then remove like
-                assert post.getLikes() != null;
-                post.getLikes().remove(dislike);
+                assert post.getDislikes() != null;
+                post.getDislikes().remove(dislike);
                 postRepository.save(post);
-                dislikesRepository.delete(dislike);
+                postRepository.undislikePost(user.getUserId(), post.getPostId());
                 return new BaseResponse<>(true, Strings.userRemoveDislike, null);
             }
         }
@@ -184,10 +187,21 @@ public class PostServiceImpl implements PostService {
         dislike.setUser(user);
         dislike.setDate(LocalDateTime.now());
 
-        post.getDislikes().add(dislike);
-        postRepository.save(post);
+        List<Dislikes> currentDislikes = post.getDislikes();
+        assert currentDislikes != null;
+        currentDislikes.add(dislike);
+        post.setDislikes(currentDislikes);
 
-        return new BaseResponse<>(true, Strings.userDislikedThePost, null);
+        try{
+            postRepository.save(post);
+            // postRepository.dislikePost(user.getUserId(), post.getPostId());
+
+            return new BaseResponse<>(true, Strings.userDislikedThePost, null);
+        }
+        catch (Exception e){
+            throw new UnknownException(Strings.errorWhileDislikePost + " " + e.getMessage());
+        }
+
     }
 
     @Override
@@ -205,12 +219,20 @@ public class PostServiceImpl implements PostService {
         comment.setDate(LocalDateTime.now());
 
         //* add comment to post
-        assert post.getComments() != null;
-        post.getComments().add(comment);
+        List<Comments> currentComments = post.getComments();
+        assert currentComments != null;
+        currentComments.add(comment);
+        post.setComments(currentComments);
 
-        //* save post
-        postRepository.save(post);
-        return new BaseResponse<>(true, Strings.commentedPost, null);
+        try{
+            //* save comment
+            postRepository.save(post);
+            postRepository.commentPost(user.getUserId(), post.getPostId());
+            return new BaseResponse<>(true, Strings.commentedPost, null);
+        }
+        catch (Exception e){
+            throw new UnknownException(Strings.errorOccurWhileCommentingPost + " " + e.getMessage());
+        }
     }
 
     @Override

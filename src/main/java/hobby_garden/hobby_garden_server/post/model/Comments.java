@@ -4,21 +4,19 @@ import hobby_garden.hobby_garden_server.user.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.neo4j.core.schema.GeneratedValue;
-import org.springframework.data.neo4j.core.schema.Id;
-import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Property;
-import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
+import org.springframework.data.neo4j.core.schema.RelationshipId;
+import org.springframework.data.neo4j.core.schema.RelationshipProperties;
+import org.springframework.data.neo4j.core.schema.TargetNode;
 
 import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Node("Comments")
+@RelationshipProperties
 public class Comments {
-    @Id
-    @GeneratedValue(generatorClass = UUIDStringGenerator.class)
+    @RelationshipId
     private String id;
 
     @Property("text")
@@ -28,5 +26,6 @@ public class Comments {
     private LocalDateTime date;
 
     @Property("user")
+    @TargetNode
     private User user;
 }

@@ -23,7 +23,7 @@ public class Post {
     String postId;
 
     @Property("author")
-    @Relationship(type = "CREATED_BY", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = "CREATED_BY", direction = Relationship.Direction.OUTGOING)
     User author;
 
     @Property("title")
@@ -38,17 +38,17 @@ public class Post {
 
     @Nullable
     @Property("likes")
-    @Relationship(type = "LIKED_BY", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "LIKES", direction = Relationship.Direction.INCOMING)
     List<Likes> likes;
 
     @Nullable
-    @Property("dislikes")
-    @Relationship(type = "DISLIKED_BY", direction = Relationship.Direction.OUTGOING)
+    @Property("undislikePost")
+    @Relationship(type = "DISLIKES", direction = Relationship.Direction.INCOMING)
     List<Dislikes> dislikes;
 
     @Nullable
     @Property("comments")
-    @Relationship(type = "COMMENTED_BY", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "COMMENTED", direction = Relationship.Direction.INCOMING)
     List<Comments> comments;
 
     @Nullable

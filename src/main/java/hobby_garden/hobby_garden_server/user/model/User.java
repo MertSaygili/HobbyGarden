@@ -41,7 +41,7 @@ public class User implements UserDetails {
     @Relationship(type = "HAS_HOBBY", direction = Relationship.Direction.OUTGOING)
     private List<Hobby> hobbies;
 
-    @Relationship(type = "CREATED_POST", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "CREATED_BY", direction = Relationship.Direction.INCOMING)
     private List<Post> posts;
 
     @Property("created_at")
