@@ -38,17 +38,17 @@ public class Post {
 
     @Nullable
     @Property("likes")
-    @Relationship(type = "HAS_LIKE", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "LIKED_BY", direction = Relationship.Direction.OUTGOING)
     List<Likes> likes;
 
     @Nullable
     @Property("dislikes")
-    @Relationship(type = "HAS_DISLIKE", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "DISLIKED_BY", direction = Relationship.Direction.OUTGOING)
     List<Dislikes> dislikes;
 
     @Nullable
     @Property("comments")
-    @Relationship(type = "HAS_COMMENT", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "COMMENTED_BY", direction = Relationship.Direction.OUTGOING)
     List<Comments> comments;
 
     @Nullable
