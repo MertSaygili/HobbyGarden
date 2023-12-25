@@ -133,6 +133,7 @@ public class PostServiceImpl implements PostService {
 
         //* check if user already liked this post
         List<Likes> likes = post.getLikes();
+        assert likes != null;
         for(Likes like : likes){
             if(like.getUser().getUserId().equals(user.getUserId())){
                 //* if user already liked this post, then remove like
@@ -146,7 +147,7 @@ public class PostServiceImpl implements PostService {
         //* user didn't like this post, then add like
         Likes like = new Likes();
         like.setUser(user);
-        like.setPost(post);
+        like.setDate(LocalDateTime.now());
 
         post.getLikes().add(like);
         postRepository.save(post);
@@ -166,9 +167,11 @@ public class PostServiceImpl implements PostService {
 
         //* check if user already disliked this post
         List<Dislikes> dislikes = post.getDislikes();
+        assert dislikes != null;
         for(Dislikes dislike : dislikes){
             if(dislike.getUser().getUserId().equals(user.getUserId())){
                 //* if user already liked this post, then remove like
+                assert post.getLikes() != null;
                 post.getLikes().remove(dislike);
                 postRepository.save(post);
                 dislikesRepository.delete(dislike);
@@ -179,7 +182,7 @@ public class PostServiceImpl implements PostService {
         //* user didn't like this post, then add dislike
         Dislikes dislike = new Dislikes();
         dislike.setUser(user);
-        dislike.setPost(post);
+        dislike.setDate(LocalDateTime.now());
 
         post.getDislikes().add(dislike);
         postRepository.save(post);
@@ -202,6 +205,7 @@ public class PostServiceImpl implements PostService {
         comment.setDate(LocalDateTime.now());
 
         //* add comment to post
+        assert post.getComments() != null;
         post.getComments().add(comment);
 
         //* save post

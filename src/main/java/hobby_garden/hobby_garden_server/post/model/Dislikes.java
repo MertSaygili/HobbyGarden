@@ -7,18 +7,21 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.neo4j.core.schema.*;
 import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Node("Dislikes")
+@RelationshipProperties
 public class Dislikes {
-    @Id
-    @GeneratedValue(generatorClass = UUIDStringGenerator.class)
+    @RelationshipId
     private String id;
 
+    @Property("date")
+    private LocalDateTime date;
+
     @Property("user")
+    @TargetNode
     private User user;
 
-    @Property("post")
-    private Post post;
 }
