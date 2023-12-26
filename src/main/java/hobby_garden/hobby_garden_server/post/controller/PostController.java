@@ -6,6 +6,7 @@ import hobby_garden.hobby_garden_server.post.dto.request.CommentsRequest;
 import hobby_garden.hobby_garden_server.post.dto.request.CreatePostRequest;
 import hobby_garden.hobby_garden_server.post.dto.request.LikeDislikeRequest;
 import hobby_garden.hobby_garden_server.post.dto.response.CreatePostResponse;
+import hobby_garden.hobby_garden_server.post.dto.response.GetCommentsResponse;
 import hobby_garden.hobby_garden_server.post.dto.response.UserPostsResponse;
 import hobby_garden.hobby_garden_server.post.service.PostService;
 import io.jsonwebtoken.Jwt;
@@ -48,18 +49,10 @@ public class PostController {
         return postService.commentPost(request);
     }
 
-    @PostMapping("/delete/{postId}")
-    BaseResponse<String> deletePost(@PathVariable Long postId) {
-        return null;
+    @GetMapping("/getComments/{postId}")
+    BaseResponse<List<GetCommentsResponse>> getComments(@PathVariable("postId") String postId) {
+        System.out.println(postId);
+        return postService.getCommentsOfPost(postId);
     }
 
-    @PostMapping("/update/{postId}")
-    BaseResponse<String> updatePost(@PathVariable Long postId) {
-        return null;
-    }
-
-    @GetMapping("/get-all")
-    BaseResponse<String> getAllPosts() {
-        return null;
-    }
 }

@@ -33,7 +33,9 @@ public  class Strings {
     public static String postDeleted = "Post deleted successfully";
     public static String postUpdated = "Post updated successfully";
     public static String postsFound = "Posts found";
+    public static String commentsFetched = "Post comments fetched";
     public static String errorOccurWhileCommentingPost = "Error occur while commenting post";
+    public static String errorOccurWhileGettingComments = "Error occur while getting comments";
     public static String errorWhileDislikePost = "Error while dislike post";
     public static String errorWhileLikePost = "Error while like post";
     public static String userPostsFetched = "User posts fetched";

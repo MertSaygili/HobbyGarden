@@ -13,6 +13,7 @@ import hobby_garden.hobby_garden_server.post.dto.request.CommentsRequest;
 import hobby_garden.hobby_garden_server.post.dto.request.CreatePostRequest;
 import hobby_garden.hobby_garden_server.post.dto.request.LikeDislikeRequest;
 import hobby_garden.hobby_garden_server.post.dto.response.CreatePostResponse;
+import hobby_garden.hobby_garden_server.post.dto.response.GetCommentsResponse;
 import hobby_garden.hobby_garden_server.post.dto.response.UserPostsResponse;
 import hobby_garden.hobby_garden_server.post.model.*;
 import hobby_garden.hobby_garden_server.post.repository.MediaRepository;
@@ -241,6 +242,45 @@ public class PostServiceImpl implements PostService {
         //* return response
         return new BaseResponse<>(true, Strings.userPostsFetched, userPostsResponses);
 
+    }
+
+    @Override
+    public BaseResponse<List<GetCommentsResponse>> getCommentsOfPost(String postId) {
+        //* check if post exists
+        Post post = getPostById(postId);
+
+        //* get comments
+        List<Comments> comments = post.getComments();
+
+        //* create response
+        List<GetCommentsResponse> getCommentsResponses = new ArrayList<>(Collections.emptyList());
+        for (Comments comment : comments) {
+            GetCommentsResponse getCommentsResponse = new GetCommentsResponse();
+
+            // comment properties
+            getCommentsResponse.setCommentId(comment.getId());
+            getCommentsResponse.setCommentText(comment.getText());
+            getCommentsResponse.setCommentDate(comment.getDate());
+
+            // user properties
+            User user = comment.getUser();
+            GetCommentsResponse.GetCommentsUser getCommentsUser = new GetCommentsResponse.GetCommentsUser();
+            getCommentsUser.setUserId(user.getUserId());
+            getCommentsUser.setUsername(user.getUsername());
+            getCommentsUser.setFirstNameLastName(user.getFirstNameLastName());
+            getCommentsUser.setEmail(user.getEmail());
+            getCommentsUser.setCreatedAt(user.getCreatedAt());
+
+            //* set user to comment and add comment to response
+            getCommentsResponse.setUser(getCommentsUser);
+            getCommentsResponses.add(getCommentsResponse);
+
+        }
+
+        System.out.println(getCommentsResponses);
+
+
+        return new BaseResponse<>(true, Strings.commentsFetched, getCommentsResponses);
     }
 
     //* helper methods, extract user from token, check if user exists, etc.
