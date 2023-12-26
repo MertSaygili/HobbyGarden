@@ -144,7 +144,7 @@ public class PostServiceImpl implements PostService {
         }
 
         try{
-            postRepository.likePost(user.getUserId(), post.getPostId());
+            postRepository.likePost(user.getUserId(), post.getPostId(), LocalDateTime.now());
             //* if user already liked this post, then remove like
             return new BaseResponse<>(true, Strings.userLikedThePost, null);
         }
@@ -182,7 +182,7 @@ public class PostServiceImpl implements PostService {
         //* user didn't like this post, then add dislike
 
         try{
-            postRepository.dislikePost(user.getUserId(), post.getPostId());
+            postRepository.dislikePost(user.getUserId(), post.getPostId(), LocalDateTime.now());
             return new BaseResponse<>(true, Strings.userDislikedThePost, null);
         }
         catch (Exception e){
@@ -205,16 +205,9 @@ public class PostServiceImpl implements PostService {
         comment.setText(request.getText());
         comment.setDate(LocalDateTime.now());
 
-        //* add comment to post
-        List<Comments> currentComments = post.getComments();
-        assert currentComments != null;
-        currentComments.add(comment);
-        post.setComments(currentComments);
-
         try{
             //* save comment
-            postRepository.save(post);
-            postRepository.commentPost(user.getUserId(), post.getPostId());
+            postRepository.commentPost(user.getUserId(), post.getPostId(), request.getText(), LocalDateTime.now());
             return new BaseResponse<>(true, Strings.commentedPost, null);
         }
         catch (Exception e){
@@ -242,7 +235,6 @@ public class PostServiceImpl implements PostService {
             userPostsResponse.setCreatorName(post.getAuthor().getUsername());
             userPostsResponse.setTitle(post.getTitle());
 //            userPostsResponse.setContent(post.getContent());
-//            userPostsResponse.setTags(post.getTags());
             userPostsResponse.setLikes(post.getLikes().size());
             userPostsResponse.setDislikes(post.getDislikes().size());
             userPostsResponse.setComments(post.getComments().size());
