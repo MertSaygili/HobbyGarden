@@ -125,36 +125,26 @@ public class PostServiceImpl implements PostService {
         //* check if post exists
         Post post = getPostById(request.getPostId());
 
+        //* check user disliked this post
+        boolean isUserDislikedPost = postRepository.checkUserDislikedPost(user.getUserId(), post.getPostId());
+        if(isUserDislikedPost){
+            //* if user disliked this post, then remove dislike
+            postRepository.undislikePost(user.getUserId(), post.getPostId());
+        }
+
         //* check if user already liked this post
         List<Likes> likes = post.getLikes();
         assert likes != null;
         for(Likes like : likes){
             if(like.getUser().getUserId().equals(user.getUserId())){
                 //* if user already liked this post, then remove like
-                List<Likes> postLikes = post.getLikes();
-                postLikes.remove(like);
-                post.setLikes(postLikes);
-                // postRepository.save(post);
-
                 postRepository.unlikePost(user.getUserId(), post.getPostId());
                 return new BaseResponse<>(true, Strings.userRemoveLike, null);
             }
         }
 
-        //* user didn't like this post, then add like
-        Likes like = new Likes();
-        like.setUser(user);
-        like.setDate(LocalDateTime.now());
-
-        List<Likes> currentLikes = post.getLikes();
-        assert currentLikes != null;
-        currentLikes.add(like);
-        post.setLikes(currentLikes);
-
         try{
-            // postRepository.save(post);
             postRepository.likePost(user.getUserId(), post.getPostId());
-
             //* if user already liked this post, then remove like
             return new BaseResponse<>(true, Strings.userLikedThePost, null);
         }
@@ -171,34 +161,28 @@ public class PostServiceImpl implements PostService {
         //* check if post exists
         Post post = getPostById(request.getPostId());
 
+        //* check user liked this post
+        boolean isUserLikedThisPost = postRepository.checkUserLikedPost(user.getUserId(), post.getPostId());
+        if(isUserLikedThisPost){
+            //* if user like this post, then remove like
+            postRepository.unlikePost(user.getUserId(), post.getPostId());
+        }
+
         //* check if user already disliked this post
         List<Dislikes> dislikes = post.getDislikes();
         assert dislikes != null;
         for(Dislikes dislike : dislikes){
             if(dislike.getUser().getUserId().equals(user.getUserId())){
                 //* if user already liked this post, then remove like
-                assert post.getDislikes() != null;
-                post.getDislikes().remove(dislike);
-                postRepository.save(post);
                 postRepository.undislikePost(user.getUserId(), post.getPostId());
                 return new BaseResponse<>(true, Strings.userRemoveDislike, null);
             }
         }
 
         //* user didn't like this post, then add dislike
-        Dislikes dislike = new Dislikes();
-        dislike.setUser(user);
-        dislike.setDate(LocalDateTime.now());
-
-        List<Dislikes> currentDislikes = post.getDislikes();
-        assert currentDislikes != null;
-        currentDislikes.add(dislike);
-        post.setDislikes(currentDislikes);
 
         try{
-            postRepository.save(post);
-            // postRepository.dislikePost(user.getUserId(), post.getPostId());
-
+            postRepository.dislikePost(user.getUserId(), post.getPostId());
             return new BaseResponse<>(true, Strings.userDislikedThePost, null);
         }
         catch (Exception e){

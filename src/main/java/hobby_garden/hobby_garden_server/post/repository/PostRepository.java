@@ -20,9 +20,17 @@ public interface PostRepository extends Neo4jRepository<Post, String> {
     @Query("Match (p1:User {user_id: $userId}), (p2:Post {post_id: $postId}) Create (p1)-[:COMMENTED]->(p2)")
     void commentPost(@Param("userId") String userId, @Param("postId") String postId);
 
+    //* check user liked post
+    @Query("Match (p1:User {user_id: $userId})-[r:LIKES]->(p2:Post {post_id: $postId}) Return Count(r) > 0")
+    boolean checkUserLikedPost(@Param("userId") String userId, @Param("postId") String postId);
+
+    //* check user disliked post
+    @Query("Match (p1:User {user_id: $userId})-[r:DISLIKES]->(p2:Post {post_id: $postId}) Return Count(r) > 0")
+    boolean checkUserDislikedPost(@Param("userId") String userId, @Param("postId") String postId);
+
     //* dislike post
-//    @Query("Match (p1:User {user_id: $userId}), (p2:Post {post_id: $postId}) Create (p1)-[:DISLIKES]->(p2)")
-//    void dislikePost(@Param("userId") String userId, @Param("postId") String postId);
+    @Query("Match (p1:User {user_id: $userId}), (p2:Post {post_id: $postId}) Create (p1)-[:DISLIKES]->(p2)")
+    void dislikePost(@Param("userId") String userId, @Param("postId") String postId);
 
     //* delete dislike relation between user and post
     @Query("Match (p1:User {user_id: $userId})-[r:DISLIKES]->(p2:Post {post_id: $postId}) Delete r")
