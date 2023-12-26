@@ -131,9 +131,12 @@ public class PostServiceImpl implements PostService {
         for(Likes like : likes){
             if(like.getUser().getUserId().equals(user.getUserId())){
                 //* if user already liked this post, then remove like
-                post.getLikes().remove(like);
-                postRepository.save(post);
-//                postRepository.unlikePost(user.getUserId(), post.getPostId());
+                List<Likes> postLikes = post.getLikes();
+                postLikes.remove(like);
+                post.setLikes(postLikes);
+                // postRepository.save(post);
+
+                postRepository.unlikePost(user.getUserId(), post.getPostId());
                 return new BaseResponse<>(true, Strings.userRemoveLike, null);
             }
         }

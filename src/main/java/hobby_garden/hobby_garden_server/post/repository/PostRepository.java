@@ -13,7 +13,7 @@ public interface PostRepository extends Neo4jRepository<Post, String> {
     void likePost(@Param("userId") String userId, @Param("postId") String postId);
 
     //* delete like relation between user and post
-    @Query("Match (p1:User {user_id: '$userId' })-[p1:LIKES]->(p2:Post {post_id: $postId}) Delete r")
+    @Query("Match (p1:User {user_id: $userId})-[r:LIKES]->(p2:Post {post_id: $postId}) Delete r")
     void unlikePost(@Param("userId") String userId, @Param("postId") String postId);
 
     //* create comment relation between user and post
