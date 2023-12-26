@@ -199,12 +199,6 @@ public class PostServiceImpl implements PostService {
         //* check if post exists
         Post post = getPostById(request.getPostId());
 
-        //* create comment
-        Comments comment = new Comments();
-        comment.setUser(user);
-        comment.setText(request.getText());
-        comment.setDate(LocalDateTime.now());
-
         try{
             //* save comment
             postRepository.commentPost(user.getUserId(), post.getPostId(), request.getText(), LocalDateTime.now());

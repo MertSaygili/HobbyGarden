@@ -24,7 +24,6 @@ public class PostController {
 
     @GetMapping("/get/{username}")
     BaseResponse<List<UserPostsResponse>> getUserPosts (@RequestHeader(value = "Authorization") String token, @PathVariable("username") String username) {
-        System.out.println("SSSSSSSSSSSSSSSSSSSSSSS");
         return postService.getUserPosts(token, username);
     }
 
@@ -43,8 +42,9 @@ public class PostController {
         return postService.dislikePost(request);
     }
 
-    @PostMapping("/comment/{postId}")
+    @PostMapping("/comment")
     BaseResponse<String> commentPost(@RequestBody CommentsRequest request) {
+        System.out.println(request);
         return postService.commentPost(request);
     }
 
