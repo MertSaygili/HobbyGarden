@@ -36,6 +36,7 @@ public  class Strings {
     public static String commentsFetched = "Post comments fetched";
     public static String errorOccurWhileCommentingPost = "Error occur while commenting post";
     public static String errorOccurWhileGettingComments = "Error occur while getting comments";
+    public static String errorOccurWhileGettingImages = "Error occur while getting images";
     public static String errorWhileDislikePost = "Error while dislike post";
     public static String errorWhileLikePost = "Error while like post";
     public static String userPostsFetched = "User posts fetched";
@@ -45,6 +46,13 @@ public  class Strings {
     public static String userRemoveLike = "User remove like";
     public static String userLikedThePost = "User liked the post";
     public static String errorOccurWhileCreatingPost = "Error occur while creating post";
+
+    //* Storage related strings
+    public static String imageUploadedSuccessfully = "Image uploaded successfully";
+    public static String imageDownloadedSuccessfully = "Image downloaded successfully";
+    public static String imageNotFound = "Image not found";
+    public static String errorOccurWhileUploadingImage = "Error occur while uploading image";
+    public static String errorWhileDownloadingImage = "Error while downloading image";
 
     //* Unknown error
     public static String unknownError = "Unknown error";

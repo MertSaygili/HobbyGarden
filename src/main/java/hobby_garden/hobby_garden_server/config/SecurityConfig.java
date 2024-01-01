@@ -33,6 +33,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(whiteList).permitAll()
+                        .requestMatchers("/api/storage/**").permitAll()
                         .requestMatchers("/api/user/**").permitAll()
                         .requestMatchers("/api/hobby/**").permitAll()
                         .requestMatchers("/api/post/**").permitAll()

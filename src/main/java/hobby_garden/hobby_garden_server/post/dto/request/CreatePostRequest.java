@@ -4,6 +4,7 @@ import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,6 +18,9 @@ public class CreatePostRequest {
     private String title;
     private String content;
     private List<String> hobbyTagIds;
+
+    @Nullable
+    private List<MultipartFile> images;
 
     @Nullable
     private List<String> imageBase64s;

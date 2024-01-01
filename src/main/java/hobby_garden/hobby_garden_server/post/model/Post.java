@@ -1,6 +1,7 @@
 package hobby_garden.hobby_garden_server.post.model;
 
 import hobby_garden.hobby_garden_server.hobby.model.Hobby;
+import hobby_garden.hobby_garden_server.storage.model.Image;
 import hobby_garden.hobby_garden_server.user.model.User;
 import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
@@ -54,6 +55,10 @@ public class Post {
     @Nullable
     @Property("media")
     List<Media> media;
+
+    @Nullable
+    @Property("images")
+    List<Image> images;
 
     @Nullable
     @Property("created_at")

@@ -1,6 +1,5 @@
 package hobby_garden.hobby_garden_server.post.controller;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import hobby_garden.hobby_garden_server.common.dto.BaseResponse;
 import hobby_garden.hobby_garden_server.post.dto.request.CommentsRequest;
 import hobby_garden.hobby_garden_server.post.dto.request.CreatePostRequest;
@@ -9,9 +8,7 @@ import hobby_garden.hobby_garden_server.post.dto.response.CreatePostResponse;
 import hobby_garden.hobby_garden_server.post.dto.response.GetCommentsResponse;
 import hobby_garden.hobby_garden_server.post.dto.response.UserPostsResponse;
 import hobby_garden.hobby_garden_server.post.service.PostService;
-import io.jsonwebtoken.Jwt;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.token.Token;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,5 +51,4 @@ public class PostController {
         System.out.println(postId);
         return postService.getCommentsOfPost(postId);
     }
-
 }

@@ -74,6 +74,7 @@ public class PostServiceImpl implements PostService {
         post.setComments(new ArrayList<>(Collections.emptyList()));
         post.setLikes(new ArrayList<>(Collections.emptyList()));
         post.setDislikes(new ArrayList<>(Collections.emptyList()));
+        post.setImages(new ArrayList<>(Collections.emptyList()));
 
         //* check is there any media
         List<Media> medias = new ArrayList<>(Collections.emptyList());
@@ -99,14 +100,12 @@ public class PostServiceImpl implements PostService {
                 }
             }
         }
-
         //* add media to post
         post.setMedia(medias);
 
         //* save post to user and post repositories
         try {
             postRepository.save(post);
-
             user.getPosts().add(post);
             userRepository.save(user);
 
@@ -283,6 +282,7 @@ public class PostServiceImpl implements PostService {
         return new BaseResponse<>(true, Strings.commentsFetched, getCommentsResponses);
     }
 
+
     //* helper methods, extract user from token, check if user exists, etc.
     private User getUserFromToken(String token){
         String username = jwtService.extractUserName(token);
@@ -303,4 +303,5 @@ public class PostServiceImpl implements PostService {
         }
         return post.get();
     }
+
 }
