@@ -131,7 +131,12 @@ public class ApplicationFilter extends OncePerRequestFilter {
             responseBody = new JsonObject("{}");
         }
         else{
-            responseBody = logMapper.stringToObject(result);
+            if(request.getRequestURI().contains("/api/storage/getImage/")){
+                responseBody = "image";
+            }
+            else {
+                responseBody = logMapper.stringToObject(result);
+            }
         }
 
         // copy response body to response

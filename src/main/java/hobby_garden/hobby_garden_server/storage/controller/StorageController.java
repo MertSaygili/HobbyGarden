@@ -3,6 +3,7 @@ package hobby_garden.hobby_garden_server.storage.controller;
 import hobby_garden.hobby_garden_server.common.dto.BaseResponse;
 import hobby_garden.hobby_garden_server.storage.service.StorageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,7 +15,7 @@ public class StorageController {
     private final StorageService storageService;
 
     @GetMapping("/getImage/{fileName}")
-    public BaseResponse<?> get(@PathVariable("fileName") String fileName) {
+    public ResponseEntity<?> get(@PathVariable("fileName") String fileName) {
         return storageService.getImage(fileName);
     }
 

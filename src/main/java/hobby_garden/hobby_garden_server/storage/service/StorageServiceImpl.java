@@ -9,6 +9,8 @@ import hobby_garden.hobby_garden_server.post.repository.PostRepository;
 import hobby_garden.hobby_garden_server.storage.model.Image;
 import hobby_garden.hobby_garden_server.storage.repository.StorageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,8 +38,8 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public BaseResponse<?> getImage(String fileName) {
-        return new BaseResponse<>(true, Strings.imageDownloadedSuccessfully, downloadImage(fileName));
+    public ResponseEntity<?> getImage(String fileName) {
+        return ResponseEntity.ok().contentType(MediaType.valueOf("image/png")).body(downloadImage(fileName));
     }
 
     private Image uploadImage(MultipartFile image){
