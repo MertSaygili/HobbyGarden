@@ -1,4 +1,4 @@
-package hobby_garden.hobby_garden_server.component;
+package hobby_garden.hobby_garden_server.common.component;
 
 import com.mongodb.internal.logging.LoggingInterceptor;
 import io.micrometer.common.lang.NonNullApi;

@@ -1,4 +1,4 @@
-package hobby_garden.hobby_garden_server.config;
+package hobby_garden.hobby_garden_server.common.config;
 
 import hobby_garden.hobby_garden_server.common.enums.Roles;
 import hobby_garden.hobby_garden_server.common.security.ApplicationFilter;
