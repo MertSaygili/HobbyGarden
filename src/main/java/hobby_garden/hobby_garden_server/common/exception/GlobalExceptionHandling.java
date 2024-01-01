@@ -51,4 +51,9 @@ public class GlobalExceptionHandling {
     public ResponseEntity<BaseResponse<Object>> handleUserAlreadyExist(UserAlreadyExist e) {
         return ResponseEntity.badRequest().body(new BaseResponse<>(false, e.getMessage(), null));
     }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<BaseResponse<Object>> handleInvalidTokenException(InvalidTokenException e) {
+        return ResponseEntity.badRequest().body(new BaseResponse<>(false, e.getMessage(), null));
+    }
 }

@@ -54,6 +54,9 @@ public  class Strings {
     public static String errorOccurWhileUploadingImage = "Error occur while uploading image";
     public static String errorWhileDownloadingImage = "Error while downloading image";
 
+    //* token
+    public static String invalidToken = "Invalid token";
+
     //* Unknown error
     public static String unknownError = "Unknown error";
 }

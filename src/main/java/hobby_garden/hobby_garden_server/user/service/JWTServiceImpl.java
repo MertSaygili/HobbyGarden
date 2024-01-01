@@ -1,5 +1,8 @@
 package hobby_garden.hobby_garden_server.user.service;
 
+import hobby_garden.hobby_garden_server.common.constants.Strings;
+import hobby_garden.hobby_garden_server.common.dto.BaseResponse;
+import hobby_garden.hobby_garden_server.common.exception.exceptions.InvalidTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -34,7 +37,12 @@ public class JWTServiceImpl implements JWTService{
 
     @Override
     public String extractUserName(String token){
-        return extractClaim(token, Claims::getSubject);
+        try{
+            return extractClaim(token, Claims::getSubject);
+        }
+        catch (Exception e){
+            throw new InvalidTokenException(Strings.invalidToken);
+        }
     }
 
     @Override
