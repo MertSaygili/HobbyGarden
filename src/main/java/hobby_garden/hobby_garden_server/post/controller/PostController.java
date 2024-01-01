@@ -6,7 +6,9 @@ import hobby_garden.hobby_garden_server.post.dto.request.CreatePostRequest;
 import hobby_garden.hobby_garden_server.post.dto.request.LikeDislikeRequest;
 import hobby_garden.hobby_garden_server.post.dto.response.CreatePostResponse;
 import hobby_garden.hobby_garden_server.post.dto.response.GetCommentsResponse;
+import hobby_garden.hobby_garden_server.post.dto.response.PostResponse;
 import hobby_garden.hobby_garden_server.post.dto.response.UserPostsResponse;
+import hobby_garden.hobby_garden_server.post.model.Post;
 import hobby_garden.hobby_garden_server.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -50,5 +52,10 @@ public class PostController {
     BaseResponse<List<GetCommentsResponse>> getComments(@PathVariable("postId") String postId) {
         System.out.println(postId);
         return postService.getCommentsOfPost(postId);
+    }
+
+    @GetMapping("/get")
+    BaseResponse<PostResponse> getPostByPostId(@RequestParam("postId") String postId) {
+        return postService.getPostByPostId(postId);
     }
 }

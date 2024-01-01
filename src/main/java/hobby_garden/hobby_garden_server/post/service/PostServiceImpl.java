@@ -14,6 +14,7 @@ import hobby_garden.hobby_garden_server.post.dto.request.CreatePostRequest;
 import hobby_garden.hobby_garden_server.post.dto.request.LikeDislikeRequest;
 import hobby_garden.hobby_garden_server.post.dto.response.CreatePostResponse;
 import hobby_garden.hobby_garden_server.post.dto.response.GetCommentsResponse;
+import hobby_garden.hobby_garden_server.post.dto.response.PostResponse;
 import hobby_garden.hobby_garden_server.post.dto.response.UserPostsResponse;
 import hobby_garden.hobby_garden_server.post.model.*;
 import hobby_garden.hobby_garden_server.post.repository.MediaRepository;
@@ -280,6 +281,31 @@ public class PostServiceImpl implements PostService {
 
 
         return new BaseResponse<>(true, Strings.commentsFetched, getCommentsResponses);
+    }
+
+    @Override
+    public BaseResponse<PostResponse> getPostByPostId(String postId){
+        //* check if post exists
+        Post post = getPostById(postId);
+
+        //* create response
+        PostResponse postResponse = new PostResponse();
+
+        //* set post properties
+        postResponse.setPostId(post.getPostId());
+        postResponse.setCreatorName(post.getAuthor().getUsername());
+        postResponse.setTitle(post.getTitle());
+        postResponse.setContent(post.getContent());
+        postResponse.setLikes(post.getLikes().size());
+        postResponse.setDislikes(post.getDislikes().size());
+        postResponse.setComments(post.getComments().size());
+        postResponse.setCreatedAt(post.getCreatedAt());
+        postResponse.setUpdatedAt(post.getUpdatedAt());
+        //postResponse.setImages(post.getMedia());
+
+
+        //* return response
+        return new BaseResponse<>(true, Strings.postsFound, postResponse);
     }
 
 
