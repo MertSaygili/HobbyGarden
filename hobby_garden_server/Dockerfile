@@ -22,7 +22,7 @@ WORKDIR /app
 
 COPY --from=builder /app/target/hobby_garden_server-0.0.1-SNAPSHOT.jar ./hobby_garden_server-latest.jar
 
-COPY wait-for-it.sh .
+RUN wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
 
 RUN chmod +x wait-for-it.sh
 

@@ -14,10 +14,6 @@ if ! which docker &>/dev/null; then
 elif [[ ! -f ./Dockerfile ]]; then
     echo "Dockerfile not found, build could not be started."
     exit 127
-elif [[ ! -f ./wait-for-it.sh ]]; then
-    wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
-    sudo docker image rm "$IMAGE_NAME:$IMAGE_TAG"
-    sudo docker build -t "$IMAGE_NAME:$IMAGE_TAG" . --no-cache --network host
 else
     sudo docker image rm "$IMAGE_NAME:$IMAGE_TAG"
     sudo docker build -t "$IMAGE_NAME:$IMAGE_TAG" . --no-cache --network host

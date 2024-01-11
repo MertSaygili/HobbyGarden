@@ -45,7 +45,6 @@ Edit `docker-compose.yml` with your favourite text editor.
 ```powershell
 Start-Service Docker
 cd .\hobby_garden_server\
-Invoke-WebRequest "https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh" -OutFile "wait-for-it.sh"
 docker build -t "hobby-garden:0.1-eclipse-temurin-17" . --no-cache --network host
 docker compose -f ..\containers\docker-compose.yml up -d
 ```
