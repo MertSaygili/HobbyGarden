@@ -16,7 +16,6 @@ elif [[ ! -f ./Dockerfile ]]; then
     exit 127
 elif [[ ! -f ./wait-for-it.sh ]]; then
     wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
-    chmod +x ./wait-for-it.sh
     sudo docker image rm "$IMAGE_NAME:$IMAGE_TAG"
     sudo docker build -t "$IMAGE_NAME:$IMAGE_TAG" . --no-cache --network host
 else
@@ -36,7 +35,10 @@ fi
 ###################################################
 
 if [[ -f ../containers/docker-compose.yml ]]; then
-    sudo docker compose -f ../containers/docker-compose.yml up -d
+    if ! sudo docker compose -f ../containers/docker-compose.yml up -d ; then 
+        echo "docker-compose.yml has syntax error(s)."
+        exit 127
+    fi
     sudo docker image prune
     exit 0
 elif [[ -f ./docker-compose.yml ]]; then

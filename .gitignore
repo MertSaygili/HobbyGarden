@@ -38,3 +38,5 @@ build/
 
 ## code ##
 secrets.properties
+
+**/docker-compose.yml

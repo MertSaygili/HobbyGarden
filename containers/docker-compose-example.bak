@@ -1,0 +1,102 @@
+version: '3.8'
+
+services:
+
+  neo4j:
+    image: bitnami/neo4j:5.12.0
+    hostname: neo4j
+    container_name: neo4j
+    restart: on-failure
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+      - "7689:7689"
+    #volumes:
+      #- ./neo4j/conf:/bitnami/neo4j/conf
+      #- ./neo4j/data:/bitnami/neo4j/data
+      #- ./neo4j/logs:/logs
+      #- ./conf/server1:/conf
+      #- ./import/server1:/import
+      #- ./metrics/server1:/metrics
+      #- ./licenses/server1:/licenses
+      #- ./ssl/server1:/ssl
+    environment:
+      - NEO4J_PASSWORD=neo4j_password
+      - NEO4J_USERNAME=neo4j_username
+      #- NEO4J_HOST=hostname
+      #- NEO4J_AUTH=username/pass
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider localhost:7474 || exit 1"]
+
+    user: root:root
+    networks:
+      - app_network
+
+  mongo:
+    hostname: mongo
+    container_name: mongo
+    image: mongo:4.4.27
+    restart: on-failure
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=mongo_username
+      - MONGO_INITDB_ROOT_PASSWORD=mongo_password
+    volumes:
+      #- ./mongo/data:/data/db
+    networks:
+      - mongo_network
+
+  mongo-express:
+    image: mongo-express:1.0.0
+    hostname: mongo-express
+    container_name: mongo-express
+    restart: on-failure
+    depends_on:
+      - mongo
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=mongo_username
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=mongo_password
+      - ME_CONFIG_MONGODB_URL=mongodb://mongo_username:mongo_password@mongo:27017/
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_BASICAUTH_USERNAME=username
+      - ME_CONFIG_BASICAUTH_PASSWORD=password
+    networks:
+      - mongo_network
+
+  HobbyGarden:
+    image: hobby-garden:0.1-eclipse-temurin-17
+    hostname: HobbyGarden
+    container_name: hobby-garden
+    restart: on-failure
+    depends_on:
+      - neo4j
+      - mongo
+    ports:
+      - "8080:8080"
+    environment:
+      - MONGO_HOST=mongo
+      - MONGO_PORT=27017
+      - MONGO_USERNAME=mongo_username
+      - MONGO_PASSWORD=mongo_password
+      - MONGO_DATABASE=mongo_database
+      - MONGO_AUTH_DB=admin
+      - NEO4J_URI=bolt://hostname:port
+      - NEO4J_USERNAME=neo4j_username
+      - NEO4J_PASSWORD=neo4j_password
+      - NEO4J_DATABASE=neo4j
+    networks:
+      - app_network
+      - mongo_network
+
+
+networks:
+  app_network:
+    driver: bridge
+    name: HobbyGarden
+  mongo_network:
+    driver: bridge
+    name: mongo_network

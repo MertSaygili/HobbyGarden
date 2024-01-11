@@ -24,6 +24,8 @@ COPY --from=builder /app/target/hobby_garden_server-0.0.1-SNAPSHOT.jar ./hobby_g
 
 COPY wait-for-it.sh .
 
+RUN chmod +x wait-for-it.sh
+
 EXPOSE 8080
 
 ENTRYPOINT [ "./wait-for-it.sh", "neo4j:7687", "--" ]
