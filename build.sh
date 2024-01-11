@@ -1,17 +1,48 @@
 #!/bin/bash
 
-# These variables are from pom.xml file
-NAME="hobby_garden_server"
-VERSION="0.0.1-SNAPSHOT"
+HOBBY_GARDEN_VERSION="0.1"
+IMAGE_NAME="hobby-garden"
+IMAGE_TAG="$HOBBY_GARDEN_VERSION-eclipse-temurin-17"
 
-mvn clean package
+###################################################
+#---------------DOCKER BUILD----------------------#
+###################################################
 
-mv target/$NAME-$VERSION.jar target/hobby_garden-latest.jar
+if ! which docker &>/dev/null; then
+    echo "Docker is not installed on your system, build could not be started."
+    exit 126
+elif [[ ! -f ./Dockerfile ]]; then
+    echo "Dockerfile not found, build could not be started."
+    exit 127
+elif [[ ! -f ./wait-for-it.sh ]]; then
+    wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
+    chmod +x ./wait-for-it.sh
+    sudo docker image rm "$IMAGE_NAME:$IMAGE_TAG"
+    sudo docker build -t "$IMAGE_NAME:$IMAGE_TAG" . --no-cache --network host
+else
+    sudo docker image rm "$IMAGE_NAME:$IMAGE_TAG"
+    sudo docker build -t "$IMAGE_NAME:$IMAGE_TAG" . --no-cache --network host
+fi
 
-wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
+#---------------CHECK BUILD--------------------#
 
-chmod +x wait-for-it.sh
+if ! sudo docker inspect "$IMAGE_NAME:$IMAGE_TAG" &>/dev/null; then
+    echo "The build failed, just like the previous build."
+    exit 125
+fi
 
-sudo docker build -t hobby-garden:0.1 .
+###################################################
+#---------------DOCKER COMPOSE--------------------#
+###################################################
 
-rm wait-for-it.sh
+if [[ -f ../containers/docker-compose.yml ]]; then
+    sudo docker compose -f ../containers/docker-compose.yml up -d
+    sudo docker image prune
+    exit 0
+elif [[ -f ./docker-compose.yml ]]; then
+    echo "It's recommended to have docker-compose.yml file under '../containers' directory."
+    echo "Otherwise, you can manually run docker compose."
+    echo "example: sudo docker compose -f /path/to/docker-compose.yml up -d"
+else
+    echo "docker-compose.yml not found"
+fi
