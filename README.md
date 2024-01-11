@@ -13,7 +13,7 @@ cd hobby_garden_server/
 
 ### Windows users
 ```powershell
-git clone git@github.com:MertSaygili/HobbyGarden.git hobby_garden_server
+git clone "git@github.com:MertSaygili/HobbyGarden.git" hobby_garden_server
 cd .\hobby_garden_server\
 .\mvnw.cmd spring-boot:run
 ```
@@ -37,7 +37,7 @@ cd hobby_garden_server/
 
 ### Windows users
 ```powershell
-git clone git@github.com:MertSaygili/HobbyGarden.git hobby_garden_server
+git clone "git@github.com:MertSaygili/HobbyGarden.git" hobby_garden_server
 mv .\containers\docker-compose-example.bak .\containers\docker-compose.yml
 ```
 Edit `docker-compose.yml` with your favourite text editor.
@@ -45,7 +45,7 @@ Edit `docker-compose.yml` with your favourite text editor.
 ```powershell
 Start-Service Docker
 cd .\hobby_garden_server\
-wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
-docker build -t hobby-garden:latest . --no-cache --network host
+Invoke-WebRequest "https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh" -OutFile "wait-for-it.sh"
+docker build -t "hobby-garden:0.1-eclipse-temurin-17" . --no-cache --network host
 docker compose -f ..\containers\docker-compose.yml up -d
 ```
