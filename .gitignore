@@ -38,3 +38,7 @@ build/
 
 ## code ##
 secrets.properties
+
+**/docker-compose.yml
+**/Connections.md
+**/wait-for-it.sh
