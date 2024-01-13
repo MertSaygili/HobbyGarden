@@ -42,3 +42,5 @@ secrets.properties
 **/docker-compose.yml
 **/Connections.md
 **/wait-for-it.sh
+containers/mongo
+containers/neo4j
