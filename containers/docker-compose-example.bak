@@ -42,7 +42,7 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=mongo_username
       - MONGO_INITDB_ROOT_PASSWORD=mongo_password
-    volumes:
+    #volumes:
       #- ./mongo/data:/data/db
     networks:
       - mongo_network
