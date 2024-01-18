@@ -44,3 +44,4 @@ secrets.properties
 **/wait-for-it.sh
 containers/mongo
 containers/neo4j
+containers/.environments/
