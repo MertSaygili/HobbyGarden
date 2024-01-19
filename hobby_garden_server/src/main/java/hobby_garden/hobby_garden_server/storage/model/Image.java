@@ -2,6 +2,7 @@ package hobby_garden.hobby_garden_server.storage.model;
 
 import lombok.Builder;
 import lombok.Data;
+import org.intellij.lang.annotations.PrintFormat;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;

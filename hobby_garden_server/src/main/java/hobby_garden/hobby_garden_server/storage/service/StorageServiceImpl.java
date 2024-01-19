@@ -8,9 +8,13 @@ import hobby_garden.hobby_garden_server.post.model.Post;
 import hobby_garden.hobby_garden_server.post.repository.PostRepository;
 import hobby_garden.hobby_garden_server.storage.model.Image;
 import hobby_garden.hobby_garden_server.storage.repository.StorageRepository;
+import hobby_garden.hobby_garden_server.user.model.User;
+import hobby_garden.hobby_garden_server.user.repository.UserRepository;
+import hobby_garden.hobby_garden_server.user.service.JWTService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,9 +27,16 @@ public class StorageServiceImpl implements StorageService {
 
     private final StorageRepository storageRepository;
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
+    private final JWTService jwtService;
 
     @Override
-    public BaseResponse<?> uploadImageToPost(String postId, MultipartFile imageBase64) {
+    public BaseResponse<?> uploadImageToPost(String token, String postId, MultipartFile imageBase64) {
+        //* check user
+        getUserByToken(token);
+
+        System.out.println(token);
+
         Post post = postRepository.findById(postId).orElseThrow(() -> new UnknownException(Strings.postNotFound));
 
         List<Image> images  = post.getImages();
@@ -38,9 +49,18 @@ public class StorageServiceImpl implements StorageService {
     }
 
     @Override
-    public ResponseEntity<?> getImage(String fileName) {
-        return ResponseEntity.ok().contentType(MediaType.valueOf("image/png")).body(downloadImage(fileName));
+    public ResponseEntity<?> getImage(String token, long fileId) {
+        //* check user
+        getUserByToken(token);
+
+        return ResponseEntity.ok().contentType(MediaType.valueOf("image/png")).body(downloadImage(fileId));
     }
+
+    private User getUserByToken(String token) {
+        String username = jwtService.extractUserNameWithBearer(token);
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(Strings.userNotFound));
+    }
+
 
     private Image uploadImage(MultipartFile image){
         try{
@@ -48,8 +68,6 @@ public class StorageServiceImpl implements StorageService {
                     .fileName(image.getOriginalFilename())
                     .fileType(image.getContentType()).
                     data(ImageUtils.compressImage(image.getBytes())).build();
-            System.out.println(newImage.toString());
-            System.out.println(newImage.getFileName());
             return storageRepository.save(newImage);
         }
         catch (Exception e){
@@ -57,9 +75,9 @@ public class StorageServiceImpl implements StorageService {
         }
     }
 
-    private byte[] downloadImage(String fileName){
+    private byte[] downloadImage(long fileId){
         try{
-            Optional<Image> image = storageRepository.findImageByName(fileName);
+            Optional<Image> image = storageRepository.findById(fileId);
             if(image.isEmpty()){
                 throw new UnknownException(Strings.imageNotFound);
             }

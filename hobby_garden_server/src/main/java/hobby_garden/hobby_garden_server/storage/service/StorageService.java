@@ -5,6 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface StorageService {
-    BaseResponse<?> uploadImageToPost(String postId, MultipartFile imageBase64);
-    ResponseEntity<?> getImage(String fileName);
+    BaseResponse<?> uploadImageToPost(String token, String postId, MultipartFile imageBase64);
+    ResponseEntity<?> getImage(String token, long fileId);
 }

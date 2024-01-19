@@ -15,12 +15,12 @@ public class StorageController {
     private final StorageService storageService;
 
     @GetMapping("/getImage/{fileName}")
-    public ResponseEntity<?> get(@PathVariable("fileName") String fileName) {
-        return storageService.getImage(fileName);
+    public ResponseEntity<?> get(@RequestHeader(value = "Authorization") String token, @PathVariable("fileName") long fileId) {
+        return storageService.getImage(token, fileId);
     }
 
     @PostMapping("/uploadImage")
-    public BaseResponse<?> upload(@RequestParam("postId") String postId,  @RequestParam("image") MultipartFile image) {
-        return storageService.uploadImageToPost(postId, image);
+    public BaseResponse<?> upload(@RequestHeader(value = "Authorization") String token, @RequestParam("postId") String postId,  @RequestParam("image") MultipartFile image) {
+        return storageService.uploadImageToPost(token, postId, image);
     }
 }
