@@ -293,6 +293,9 @@ public class PostServiceImpl implements PostService {
         //* check user
         getUserByToken(token);
 
+        System.out.println(token);
+        System.out.println(postId);
+
         //* check if post exists
         Post post = getPostById(postId);
 

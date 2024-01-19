@@ -52,8 +52,8 @@ public class PostController {
         return postService.getCommentsOfPost(token, postId);
     }
 
-    @GetMapping("/get")
-    BaseResponse<PostResponse> getPostByPostId(@RequestHeader(value = "Authorization") String token, @RequestParam("postId") String postId) {
+    @GetMapping("/{postId}")
+    BaseResponse<PostResponse> getPostByPostId(@RequestHeader(value = "Authorization") String token, @PathVariable("postId") String postId) {
         return postService.getPostByPostId(token, postId);
     }
 }
