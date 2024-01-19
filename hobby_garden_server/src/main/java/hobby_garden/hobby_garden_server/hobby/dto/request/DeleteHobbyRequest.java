@@ -5,5 +5,4 @@ import lombok.Data;
 @Data
 public class DeleteHobbyRequest {
     private String hobbyId;
-    private String userToken;
 }

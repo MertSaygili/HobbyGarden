@@ -22,12 +22,12 @@ public class HobbyController {
     }
 
     @DeleteMapping("/delete")
-    public BaseResponse<String> deleteHobbyFromUser(@RequestBody DeleteHobbyRequest deleteHobbyRequest) {
-        return hobbyService.deleteHobbyFromUser(deleteHobbyRequest);
+    public BaseResponse<String> deleteHobbyFromUser(@RequestHeader(value = "Authorization") String token, @RequestBody DeleteHobbyRequest deleteHobbyRequest) {
+        return hobbyService.deleteHobbyFromUser(token, deleteHobbyRequest);
     }
 
     @PostMapping("/add")
-    public BaseResponse<String> addHobbyToUser(@RequestBody AddHobbyToUser addHobbyToUser) {
-        return hobbyService.addHobbyToUser(addHobbyToUser);
+    public BaseResponse<String> addHobbyToUser(@RequestHeader(value = "Authorization") String token, @RequestBody AddHobbyToUser addHobbyToUser) {
+        return hobbyService.addHobbyToUser(token, addHobbyToUser);
     }
 }

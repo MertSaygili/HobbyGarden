@@ -12,6 +12,7 @@ import hobby_garden.hobby_garden_server.user.model.User;
 import hobby_garden.hobby_garden_server.user.repository.UserRepository;
 import hobby_garden.hobby_garden_server.user.service.JWTService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -52,14 +53,9 @@ public class HobbyServiceImpl implements HobbyService{
     }
 
     @Override
-    public BaseResponse<String> deleteHobbyFromUser(DeleteHobbyRequest deleteHobbyRequest) {
+    public BaseResponse<String> deleteHobbyFromUser(String token, DeleteHobbyRequest deleteHobbyRequest) {
         //* get user from user repository by user token, jwtService.extractUserName() returns username from token
-        String username = jwtService.extractUserName(deleteHobbyRequest.getUserToken());
-        System.out.println("username: " + username);
-        User user = userRepository.findByUsername(username).orElse(null);
-        if(user == null){
-            throw new UserNotFoundException(Strings.userNotFound);
-        }
+        User user = getUserNameByToken(token);
 
         //* check if user has hobby
         Optional<Hobby> hobby = hobbyRepository.findById(deleteHobbyRequest.getHobbyId());
@@ -78,14 +74,9 @@ public class HobbyServiceImpl implements HobbyService{
     }
 
     @Override
-    public BaseResponse<String> addHobbyToUser(AddHobbyToUser addHobbyToUser) {
+    public BaseResponse<String> addHobbyToUser(String token, AddHobbyToUser addHobbyToUser) {
         //* check if user exists, if not throw exception
-        String username = jwtService.extractUserName(addHobbyToUser.getUserToken());
-        User user = userRepository.findByUsername(username).orElse(null);
-        //* throw exception
-        if(user == null){
-            throw new UserNotFoundException(Strings.userNotFound);
-        }
+        User user = getUserNameByToken(token);
 
         //* check if hobby exists, if not create it
         Hobby hobby = hobbyRepository.findByName(addHobbyToUser.getHobbyName()).orElse(null);
@@ -126,5 +117,10 @@ public class HobbyServiceImpl implements HobbyService{
 
         //* return response
         return new BaseResponse<>(true, Strings.hobbiesFound, allHobbiesResponse);
+    }
+
+    private User getUserNameByToken(String token) {
+        String username = jwtService.extractUserNameWithBearer(token);
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(Strings.userNotFound));
     }
 }
