@@ -36,6 +36,17 @@ public class JWTServiceImpl implements JWTService{
     }
 
     @Override
+    public String extractUserNameWithBearer(String token){
+        try{
+            String withoutBearer = token.split("Bearer ")[1];
+            return  extractClaim(withoutBearer, Claims::getSubject);
+        }
+        catch (Exception e) {
+            throw new InvalidTokenException(Strings.invalidToken);
+        }
+    }
+
+    @Override
     public String extractUserName(String token){
         try{
             return extractClaim(token, Claims::getSubject);

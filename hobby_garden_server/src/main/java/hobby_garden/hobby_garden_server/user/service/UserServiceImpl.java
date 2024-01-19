@@ -95,12 +95,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BaseResponse<String> updatePassword(UpdatePasswordRequest updatePasswordRequest) {
+    public BaseResponse<String> updatePassword(String token, UpdatePasswordRequest updatePasswordRequest) {
         //* get user from db
-        User user = getUserNameByToken(updatePasswordRequest.getUserToken());
+        User user = getUserNameByToken(token);
 
         //* check if old password is correct
-        if(passwordMapper.encode(updatePasswordRequest.getOldPassword()).equals(user.getPassword())) {
+        if(passwordMapper.matches(updatePasswordRequest.getOldPassword(), user.getPassword())) {
             user.setPassword(passwordMapper.encode(updatePasswordRequest.getNewPassword()));
             userRepository.save(user);
             try{
@@ -118,28 +118,36 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public BaseResponse<String> forgotPassword(ForgotPasswordRequest forgotPasswordRequest) {
-        User user = getUserNameByToken(forgotPasswordRequest.getUserToken());
+        Optional<User> user = userRepository.findByUsername(forgotPasswordRequest.getUsername());
 
-        //* check email is correct, then send [email] with new password
-        if(user.getEmail().equals(forgotPasswordRequest.getEmail())) {
-            user.setPassword(passwordMapper.encode(forgotPasswordRequest.getNewPassword()));
-            userRepository.save(user);
-            try{
-                userRepository.save(user);
-                return new BaseResponse<>(true, Strings.passwordChanged, null);
+        //* check user is existed or not, username is unique
+        if(user.isPresent()) {
+            User userInfo = user.get();
+            //* check email is correct, then send [email] with new password
+            if(userInfo.getEmail().equals(forgotPasswordRequest.getEmail())) {
+                userInfo.setPassword(passwordMapper.encode(forgotPasswordRequest.getNewPassword()));
+                userRepository.save(userInfo);
+                try{
+                    userRepository.save(userInfo);
+                    return new BaseResponse<>(true, Strings.passwordChanged, null);
 
-            } catch (Exception e) {
-                throw new UnknownException(Strings.unknownExceptionWhileUpdatingUser + " " + e.getMessage());
+                } catch (Exception e) {
+                    throw new UnknownException(Strings.unknownExceptionWhileUpdatingUser + " " + e.getMessage());
+                }
+            }
+            else{
+                return new BaseResponse<>(false, Strings.userNotFound, null);
             }
         }
         else{
             return new BaseResponse<>(false, Strings.userNotFound, null);
         }
+
     }
 
 
     private User getUserNameByToken(String token) {
-        String username = jwtService.extractUserName(token);
+        String username = jwtService.extractUserNameWithBearer(token);
         return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(Strings.userNotFound));
     }
 }

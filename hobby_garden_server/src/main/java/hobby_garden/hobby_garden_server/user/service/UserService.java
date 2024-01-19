@@ -11,6 +11,6 @@ import hobby_garden.hobby_garden_server.user.model.User;
 public interface UserService {
      BaseResponse<SignInResponse> signIn(SignInRequest signInRequest);
      BaseResponse<Object> signUp(SignUpRequest signUpRequest);
-     BaseResponse<String> updatePassword(UpdatePasswordRequest updatePasswordRequest);
+     BaseResponse<String> updatePassword(String token, UpdatePasswordRequest updatePasswordRequest);
      BaseResponse<String> forgotPassword(ForgotPasswordRequest forgotPasswordRequest);
 }

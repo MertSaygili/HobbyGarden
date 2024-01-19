@@ -29,8 +29,8 @@ public class UserController {
     }
 
     @PutMapping("/updatePassword")
-    public BaseResponse<String> updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest) {
-        return userService.updatePassword(updatePasswordRequest);
+    public BaseResponse<String> updatePassword(@RequestHeader(value = "Authorization") String token, @RequestBody UpdatePasswordRequest updatePasswordRequest) {
+        return userService.updatePassword(token, updatePasswordRequest);
     }
 
     @PatchMapping("/forgotPassword")
