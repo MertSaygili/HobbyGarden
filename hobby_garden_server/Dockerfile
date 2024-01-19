@@ -22,6 +22,8 @@ WORKDIR /app
 
 COPY --from=builder /app/target/hobby_garden_server-0.0.1-SNAPSHOT.jar ./hobby_garden_server-latest.jar
 
+WORKDIR /
+
 RUN wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh
 
 RUN chmod +x wait-for-it.sh
@@ -30,4 +32,4 @@ EXPOSE 8080
 
 ENTRYPOINT [ "./wait-for-it.sh", "neo4j:7687", "--" ]
 
-CMD [ "java", "-jar", "hobby_garden_server-latest.jar" ]
+CMD [ "java", "-jar", "/app/hobby_garden_server-latest.jar" ]
