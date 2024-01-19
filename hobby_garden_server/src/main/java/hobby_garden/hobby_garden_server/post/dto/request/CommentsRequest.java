@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentsRequest {
-    private String userToken;
     private String postId;
     private String text;
 }

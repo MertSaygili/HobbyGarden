@@ -28,34 +28,32 @@ public class PostController {
     }
 
     @PostMapping("/create")
-    BaseResponse<CreatePostResponse> createPost(@RequestBody CreatePostRequest requestBody) {
-        return postService.createPost(requestBody);
+    BaseResponse<CreatePostResponse> createPost(@RequestHeader(value = "Authorization") String token, @RequestBody CreatePostRequest requestBody) {
+        return postService.createPost(token, requestBody);
     }
 
     @PostMapping("/like-unlike")
-    BaseResponse<String> likeUnlikePost(@RequestBody LikeDislikeRequest request) {
-        return postService.likePost(request);
+    BaseResponse<String> likeUnlikePost(@RequestHeader(value = "Authorization") String token, @RequestBody LikeDislikeRequest request) {
+        return postService.likePost(token, request);
     }
 
     @PostMapping("/dislike-unlike")
-    BaseResponse<String> dislikeUndislikePost(@RequestBody LikeDislikeRequest request) {
-        return postService.dislikePost(request);
+    BaseResponse<String> dislikeUndislikePost(@RequestHeader(value = "Authorization") String token, @RequestBody LikeDislikeRequest request) {
+        return postService.dislikePost(token, request);
     }
 
     @PostMapping("/comment")
-    BaseResponse<String> commentPost(@RequestBody CommentsRequest request) {
-        System.out.println(request);
-        return postService.commentPost(request);
+    BaseResponse<String> commentPost(@RequestHeader(value = "Authorization") String token, @RequestBody CommentsRequest request) {
+        return postService.commentPost(token, request);
     }
 
     @GetMapping("/getComments/{postId}")
-    BaseResponse<List<GetCommentsResponse>> getComments(@PathVariable("postId") String postId) {
-        System.out.println(postId);
-        return postService.getCommentsOfPost(postId);
+    BaseResponse<List<GetCommentsResponse>> getComments(@RequestHeader(value = "Authorization") String token, @PathVariable("postId") String postId) {
+        return postService.getCommentsOfPost(token, postId);
     }
 
     @GetMapping("/get")
-    BaseResponse<PostResponse> getPostByPostId(@RequestParam("postId") String postId) {
-        return postService.getPostByPostId(postId);
+    BaseResponse<PostResponse> getPostByPostId(@RequestHeader(value = "Authorization") String token, @RequestParam("postId") String postId) {
+        return postService.getPostByPostId(token, postId);
     }
 }

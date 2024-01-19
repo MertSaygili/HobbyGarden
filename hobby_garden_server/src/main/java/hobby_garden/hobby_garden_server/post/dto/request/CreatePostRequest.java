@@ -14,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @SuppressWarnings("class can be a record")
 public class CreatePostRequest {
-    private String userToken;
     private String title;
     private String content;
     private List<String> hobbyTagIds;

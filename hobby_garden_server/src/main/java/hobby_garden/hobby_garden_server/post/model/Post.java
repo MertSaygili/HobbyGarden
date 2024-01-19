@@ -39,12 +39,12 @@ public class Post {
 
     @Nullable
     @Property("likes")
-    @Relationship(type = "LIKES", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = "LIKED", direction = Relationship.Direction.INCOMING)
     List<Likes> likes;
 
     @Nullable
     @Property("undislikePost")
-    @Relationship(type = "DISLIKES", direction = Relationship.Direction.INCOMING)
+    @Relationship(type = "DISLIKED", direction = Relationship.Direction.INCOMING)
     List<Dislikes> dislikes;
 
     @Nullable

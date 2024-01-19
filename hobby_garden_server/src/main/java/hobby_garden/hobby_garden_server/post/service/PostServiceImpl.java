@@ -5,7 +5,6 @@ import hobby_garden.hobby_garden_server.common.dto.BaseResponse;
 import hobby_garden.hobby_garden_server.common.exception.exceptions.HobbyNotFoundException;
 import hobby_garden.hobby_garden_server.common.exception.exceptions.PostNotFoundException;
 import hobby_garden.hobby_garden_server.common.exception.exceptions.UnknownException;
-import hobby_garden.hobby_garden_server.common.exception.exceptions.UserNotFoundException;
 import hobby_garden.hobby_garden_server.common.utility.ImageConverter;
 import hobby_garden.hobby_garden_server.hobby.model.Hobby;
 import hobby_garden.hobby_garden_server.hobby.repository.HobbyRepository;
@@ -23,6 +22,7 @@ import hobby_garden.hobby_garden_server.user.model.User;
 import hobby_garden.hobby_garden_server.user.repository.UserRepository;
 import hobby_garden.hobby_garden_server.user.service.JWTService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.awt.image.BufferedImage;
@@ -47,10 +47,11 @@ public class PostServiceImpl implements PostService {
     private final ImageConverter imageConverter = new ImageConverter();
 
     @Override
-    public BaseResponse<CreatePostResponse> createPost(CreatePostRequest request)  {
+    public BaseResponse<CreatePostResponse> createPost(String token, CreatePostRequest request)  {
         //* check if user exist, first check if token is valid and extract username
         //* then check if user exists in db
-        User user = getUserFromToken(request.getUserToken());
+        User user = getUserByToken(token);
+        System.out.println(token);
 
         //* check if hobby exists
         List<String> hobbyIds = request.getHobbyTagIds();
@@ -119,9 +120,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public BaseResponse<String> likePost(LikeDislikeRequest request) {
+    public BaseResponse<String> likePost(String token, LikeDislikeRequest request) {
         //* check if user exist, first check if token is valid and extract username
-        User user = getUserFromToken(request.getUserToken());
+        User user = getUserByToken(token);
 
         //* check if post exists
         Post post = getPostById(request.getPostId());
@@ -155,9 +156,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public BaseResponse<String> dislikePost(LikeDislikeRequest request) {
+    public BaseResponse<String> dislikePost(String token, LikeDislikeRequest request) {
         //* get user
-        User user = getUserFromToken(request.getUserToken());
+        User user = getUserByToken(token);
 
         //* check if post exists
         Post post = getPostById(request.getPostId());
@@ -193,9 +194,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public BaseResponse<String> commentPost(CommentsRequest request) {
+    public BaseResponse<String> commentPost(String token, CommentsRequest request) {
         //* get user, check if user exists
-        User user = getUserFromToken(request.getUserToken());
+        User user = getUserByToken(token);
 
         //* check if post exists
         Post post = getPostById(request.getPostId());
@@ -213,7 +214,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public BaseResponse<List<UserPostsResponse>> getUserPosts(String token, String username) {
         //* get user, check if user exists
-        User user = getUserFromToken(token.split(" ")[1]);
+        User user = getUserByToken(token);
 
         //* get user posts
         List<Post> posts = user.getPosts();
@@ -245,7 +246,11 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public BaseResponse<List<GetCommentsResponse>> getCommentsOfPost(String postId) {
+    public BaseResponse<List<GetCommentsResponse>> getCommentsOfPost(String token, String postId) {
+
+        //* check user
+        getUserByToken(token);
+
         //* check if post exists
         Post post = getPostById(postId);
 
@@ -284,7 +289,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public BaseResponse<PostResponse> getPostByPostId(String postId){
+    public BaseResponse<PostResponse> getPostByPostId(String token, String postId){
+        //* check user
+        getUserByToken(token);
+
         //* check if post exists
         Post post = getPostById(postId);
 
@@ -310,17 +318,11 @@ public class PostServiceImpl implements PostService {
 
 
     //* helper methods, extract user from token, check if user exists, etc.
-    private User getUserFromToken(String token){
-        String username = jwtService.extractUserName(token);
-        if (username == null) {
-            throw new UserNotFoundException(Strings.userNotFound);
-        }
-        Optional<User> user = userRepository.findByUsername(username);
-        if (user.isEmpty()) {
-            throw new UserNotFoundException(Strings.userNotFound);
-        }
-        return user.get();
+    private User getUserByToken(String token) {
+        String username = jwtService.extractUserNameWithBearer(token);
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(Strings.userNotFound));
     }
+
 
     private Post getPostById(String postId){
         Optional<Post> post = postRepository.findById(postId);
@@ -329,5 +331,4 @@ public class PostServiceImpl implements PostService {
         }
         return post.get();
     }
-
 }

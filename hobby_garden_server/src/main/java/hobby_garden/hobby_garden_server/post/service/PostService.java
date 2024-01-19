@@ -14,17 +14,17 @@ import org.springframework.security.core.token.Token;
 import java.util.List;
 
 public interface PostService {
-    BaseResponse<CreatePostResponse> createPost(CreatePostRequest request);
+    BaseResponse<CreatePostResponse> createPost(String token, CreatePostRequest request);
 
-    BaseResponse<String> likePost(LikeDislikeRequest request);
+    BaseResponse<String> likePost(String token, LikeDislikeRequest request);
 
-    BaseResponse<String> dislikePost(LikeDislikeRequest request);
+    BaseResponse<String> dislikePost(String token, LikeDislikeRequest request);
 
-    BaseResponse<String> commentPost(CommentsRequest request);
+    BaseResponse<String> commentPost(String token, CommentsRequest request);
 
     BaseResponse<List<UserPostsResponse>> getUserPosts(String token, String username);
 
-    BaseResponse<List<GetCommentsResponse>> getCommentsOfPost(String postId);
+    BaseResponse<List<GetCommentsResponse>> getCommentsOfPost(String token, String postId);
 
-    BaseResponse<PostResponse> getPostByPostId(String postId);
+    BaseResponse<PostResponse> getPostByPostId(String token, String postId);
 }

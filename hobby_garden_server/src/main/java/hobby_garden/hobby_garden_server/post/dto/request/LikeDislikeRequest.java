@@ -8,6 +8,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LikeDislikeRequest {
-    private String userToken;
     private String postId;
 }
