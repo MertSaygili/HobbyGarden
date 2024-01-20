@@ -3,6 +3,12 @@ package hobby_garden.hobby_garden_server.common.constants;
 
 public  class Strings {
 
+    //* Talent
+    public static final String talentRequested = "Talent requested";
+    public static final String talentRequestAccepted = "Request accepted";
+    public static final String requestNotFound = "Request not found";
+    public static final String talentRequestRejected = "Request rejected";
+
     //* User related strings
     public static final String userAlreadyExist = "User already exist";
     public static final String usernameInUse = "Username is already in use";

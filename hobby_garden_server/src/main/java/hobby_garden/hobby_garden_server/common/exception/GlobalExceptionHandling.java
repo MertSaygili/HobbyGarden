@@ -56,4 +56,9 @@ public class GlobalExceptionHandling {
     public ResponseEntity<BaseResponse<Object>> handleInvalidTokenException(InvalidTokenException e) {
         return ResponseEntity.badRequest().body(new BaseResponse<>(false, e.getMessage(), null));
     }
+
+    @ExceptionHandler(RequestNotFound.class)
+    public ResponseEntity<BaseResponse<Object>> requestNotFound(InvalidTokenException e) {
+        return ResponseEntity.badRequest().body(new BaseResponse<>(false, e.getMessage(), null));
+    }
 }

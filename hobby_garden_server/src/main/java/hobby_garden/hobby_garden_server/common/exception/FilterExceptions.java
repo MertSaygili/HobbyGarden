@@ -22,6 +22,7 @@ public class FilterExceptions extends RuntimeException{
             case Strings.hobbyNotFound -> throw new HobbyNotFoundException(message);
             case Strings.errorOccurWhileCreatingHobby -> throw new ErrorWhileCreatingHobby(message);
             case Strings.hobbyNameIsEmpty -> throw new BadHobbyNameFormat(message);
+            case Strings.requestNotFound -> throw new RequestNotFound(message);
             default -> throw new UnknownException(message);
         }
 
