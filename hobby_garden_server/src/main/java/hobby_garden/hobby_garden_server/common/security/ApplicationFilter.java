@@ -51,6 +51,7 @@ public class ApplicationFilter extends OncePerRequestFilter {
             return;
         }
 
+
         // * log filter and authentication filter
         logFilter(request, response, filterChain);
         authenticationFilter(request);

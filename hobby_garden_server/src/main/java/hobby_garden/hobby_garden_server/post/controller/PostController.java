@@ -4,10 +4,7 @@ import hobby_garden.hobby_garden_server.common.dto.BaseResponse;
 import hobby_garden.hobby_garden_server.post.dto.request.CommentsRequest;
 import hobby_garden.hobby_garden_server.post.dto.request.CreatePostRequest;
 import hobby_garden.hobby_garden_server.post.dto.request.LikeDislikeRequest;
-import hobby_garden.hobby_garden_server.post.dto.response.CreatePostResponse;
-import hobby_garden.hobby_garden_server.post.dto.response.GetCommentsResponse;
-import hobby_garden.hobby_garden_server.post.dto.response.PostResponse;
-import hobby_garden.hobby_garden_server.post.dto.response.UserPostsResponse;
+import hobby_garden.hobby_garden_server.post.dto.response.*;
 import hobby_garden.hobby_garden_server.post.model.Post;
 import hobby_garden.hobby_garden_server.post.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +47,11 @@ public class PostController {
     @GetMapping("/getComments/{postId}")
     BaseResponse<List<GetCommentsResponse>> getComments(@RequestHeader(value = "Authorization") String token, @PathVariable("postId") String postId) {
         return postService.getCommentsOfPost(token, postId);
+    }
+
+    @GetMapping("/get/status/{postId}")
+    BaseResponse<PostStatus> getPostStatus(@RequestHeader(value = "Authorization") String token, @PathVariable("postId") String postId){
+        return postService.getPostStatus(token, postId);
     }
 
     @GetMapping("/{postId}")

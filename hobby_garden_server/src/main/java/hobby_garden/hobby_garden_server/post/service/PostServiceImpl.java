@@ -12,10 +12,7 @@ import hobby_garden.hobby_garden_server.hobby.repository.HobbyRepository;
 import hobby_garden.hobby_garden_server.post.dto.request.CommentsRequest;
 import hobby_garden.hobby_garden_server.post.dto.request.CreatePostRequest;
 import hobby_garden.hobby_garden_server.post.dto.request.LikeDislikeRequest;
-import hobby_garden.hobby_garden_server.post.dto.response.CreatePostResponse;
-import hobby_garden.hobby_garden_server.post.dto.response.GetCommentsResponse;
-import hobby_garden.hobby_garden_server.post.dto.response.PostResponse;
-import hobby_garden.hobby_garden_server.post.dto.response.UserPostsResponse;
+import hobby_garden.hobby_garden_server.post.dto.response.*;
 import hobby_garden.hobby_garden_server.post.model.*;
 import hobby_garden.hobby_garden_server.post.repository.MediaRepository;
 import hobby_garden.hobby_garden_server.post.repository.PostRepository;
@@ -345,6 +342,31 @@ public class PostServiceImpl implements PostService {
             return new BaseResponse<>(true, Strings.postsFound, postResponse);
         }
         catch (Exception e) {
+            throw new FilterExceptions(e.getMessage());
+        }
+    }
+
+    @Override
+    public BaseResponse<PostStatus> getPostStatus(String token, String postId) {
+
+        //* check token
+        getUserByToken(token);
+
+        try{
+            Optional<Post> post = postRepository.findById(postId);
+            if(post.isPresent()){
+                PostStatus postStatus = new PostStatus();
+                postStatus.setCommentCount(post.get().getComments().size());
+                postStatus.setLikeCount(post.get().getLikes().size());
+                postStatus.setDislikeCount(post.get().getDislikes().size());
+                return new BaseResponse<>(true, Strings.postStatusFetched, postStatus);
+            }
+            else{
+                throw new PostNotFoundException(Strings.postNotFound);
+            }
+
+        }
+        catch (Exception e){
             throw new FilterExceptions(e.getMessage());
         }
     }

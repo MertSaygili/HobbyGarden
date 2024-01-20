@@ -42,6 +42,7 @@ public  class Strings {
     public static final String userRemoveLike = "User remove like";
     public static final String userLikedThePost = "User liked the post";
     public static final String errorOccurWhileCreatingPost = "Error occur while creating post";
+    public static final String postStatusFetched = "Post status fetched";
 
     //* Storage related strings
     public static final String imageUploadedSuccessfully = "Image uploaded successfully";
